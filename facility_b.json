@@ -1,0 +1,1615 @@
+{
+    "location_name": "Facility B - Production Plant",
+    "images_folder": "",
+    "map_svg": "<svg viewBox=\"0 0 1200 700\" xmlns=\"http://www.w3.org/2000/svg\">\n    <style>\n        .outer-wall { fill: none; stroke: #2c3e50; stroke-width: 3; stroke-linejoin: round; }\n        .inner-wall { fill: none; stroke: #2c3e50; stroke-width: 1.8; stroke-linecap: square; }\n    </style>\n<rect x=\"50\" y=\"50\" width=\"1100\" height=\"600\" class=\"outer-wall\" />\n\n<line x1=\"290\" y1=\"50\" x2=\"290\" y2=\"650\" class=\"inner-wall\" />\n<line x1=\"50\" y1=\"270\" x2=\"290\" y2=\"270\" class=\"inner-wall\" />\n<line x1=\"290\" y1=\"350\" x2=\"860\" y2=\"350\" class=\"inner-wall\" />\n<line x1=\"860\" y1=\"50\" x2=\"860\" y2=\"650\" class=\"inner-wall\" />\n<line x1=\"860\" y1=\"350\" x2=\"1150\" y2=\"350\" class=\"inner-wall\" />\n</svg>",
+    "rack_coordinates": {
+        "mdf_server_room": {
+            "x": 170,
+            "y": 160,
+            "label_side": "bottom",
+            "label_align": "center",
+            "comment": "replace HVAC air filter"
+        },
+        "testing_lab": {
+            "x": 170,
+            "y": 460,
+            "label_side": "top",
+            "label_align": "center"
+        },
+        "cnc_workshop": {
+            "x": 575,
+            "y": 200,
+            "label_side": "bottom",
+            "label_align": "center"
+        },
+        "robotics_bay": {
+            "x": 575,
+            "y": 500,
+            "label_side": "top",
+            "label_align": "center"
+        },
+        "maintenance_shop": {
+            "x": 1005,
+            "y": 350,
+            "label_side": "left",
+            "label_align": "center"
+        }
+    },
+    "devices": [
+        {
+            "name": "RB4011iGS+RM",
+            "ip": "172.16.0.1",
+            "location": "mdf_server_room",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "Main WAN Gateway 2Gbps Fiber BGP",
+                    "ip": "203.0.113.1",
+                    "category": "other",
+                    "row": 1,
+                    "label": "01"
+                },
+                {
+                    "port": "E02",
+                    "connected": "TL-SG3428 mdf_server_room E24",
+                    "ip": "172.16.0.2",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "mdf_server_room",
+                    "row": 1,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "T1600G-28TS mdf_server_room E24",
+                    "ip": "172.16.0.3",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "mdf_server_room",
+                    "row": 1,
+                    "label": "03"
+                },
+                {
+                    "port": "E04",
+                    "connected": "T2600G-28TS cnc_workshop E24",
+                    "ip": "172.16.0.4",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "cnc_workshop",
+                    "row": 1,
+                    "label": "04",
+                    "comment": "management access on port 5301"
+                },
+                {
+                    "port": "E05",
+                    "connected": "USW-Enterprise-8-PoE testing_lab E1",
+                    "ip": "172.16.0.6",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "testing_lab",
+                    "row": 1,
+                    "label": "05"
+                },
+                {
+                    "port": "E06",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "08"
+                },
+                {
+                    "port": "E09",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "09"
+                },
+                {
+                    "port": "E10",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "10"
+                },
+                {
+                    "port": "SFP11",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "space": true,
+                    "label": "11"
+                }
+            ],
+            "comment": "requires firmware reflash after power surge"
+        },
+        {
+            "name": "TL-SG3428",
+            "ip": "172.16.0.2",
+            "location": "mdf_server_room",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "Wonderware SCADA Primary Server",
+                    "ip": "172.16.10.10",
+                    "category": "server",
+                    "row": 1,
+                    "label": "01"
+                },
+                {
+                    "port": "E02",
+                    "connected": "Serwer MES Produkcja & Zlecenia",
+                    "ip": "172.16.10.11",
+                    "category": "server",
+                    "row": 2,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "Serwer Bazy Danych SQL Enterprise",
+                    "ip": "172.16.10.12",
+                    "category": "server",
+                    "row": 1,
+                    "label": "03"
+                },
+                {
+                    "port": "E04",
+                    "connected": "Kontroler Domeny Active Directory AD-01",
+                    "ip": "172.16.10.5",
+                    "category": "server",
+                    "row": 2,
+                    "label": "04"
+                },
+                {
+                    "port": "E05",
+                    "connected": "Serwer Kopia Zapasowa Veeam",
+                    "ip": "172.16.10.20",
+                    "category": "server",
+                    "row": 1,
+                    "label": "05",
+                    "comment": "requires agent reinstall"
+                },
+                {
+                    "port": "E06",
+                    "connected": "VMware ESXi Compute Node 1",
+                    "ip": "172.16.10.51",
+                    "category": "server",
+                    "row": 2,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "VMware ESXi Compute Node 2",
+                    "ip": "172.16.10.52",
+                    "category": "server",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "Dell iDRAC Management ESXi-1",
+                    "ip": "172.16.99.11",
+                    "category": "server",
+                    "row": 2,
+                    "label": "08"
+                },
+                {
+                    "port": "E09",
+                    "connected": "Dell iDRAC Management ESXi-2",
+                    "ip": "172.16.99.12",
+                    "category": "server",
+                    "row": 1,
+                    "label": "09"
+                },
+                {
+                    "port": "E10",
+                    "connected": "Polon-Alfa Fire Alarm Control Panel",
+                    "ip": "172.16.10.8",
+                    "category": "other",
+                    "row": 2,
+                    "label": "10"
+                },
+                {
+                    "port": "E11",
+                    "connected": "Roger Access Control Panel",
+                    "ip": "172.16.10.9",
+                    "category": "other",
+                    "row": 1,
+                    "label": "11"
+                },
+                {
+                    "port": "E12",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "12"
+                },
+                {
+                    "port": "E13",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "13"
+                },
+                {
+                    "port": "E14",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "14"
+                },
+                {
+                    "port": "E15",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "15"
+                },
+                {
+                    "port": "E16",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "16"
+                },
+                {
+                    "port": "E17",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "17"
+                },
+                {
+                    "port": "E18",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "18"
+                },
+                {
+                    "port": "E19",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "19"
+                },
+                {
+                    "port": "E20",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "20"
+                },
+                {
+                    "port": "E21",
+                    "connected": "TL-SG1428PE robotics_bay E26",
+                    "ip": "172.16.0.8",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "robotics_bay",
+                    "row": 1,
+                    "label": "21"
+                },
+                {
+                    "port": "E22",
+                    "connected": "SG350-10 maintenance_shop E1",
+                    "ip": "172.16.0.9",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "maintenance_shop",
+                    "row": 2,
+                    "label": "22"
+                },
+                {
+                    "port": "E23",
+                    "connected": "T1600G-28TS mdf_server_room E23",
+                    "ip": "172.16.0.3",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "mdf_server_room",
+                    "row": 1,
+                    "label": "23"
+                },
+                {
+                    "port": "E24",
+                    "connected": "RB4011iGS+RM mdf_server_room E02",
+                    "ip": "172.16.0.1",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "mdf_server_room",
+                    "row": 2,
+                    "label": "24"
+                }
+            ]
+        },
+        {
+            "name": "T1600G-28TS",
+            "ip": "172.16.0.3",
+            "location": "mdf_server_room",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "Macierz Dyskowa SAN Synology FS3410 LAN1",
+                    "ip": "172.16.10.31",
+                    "category": "server",
+                    "row": 1,
+                    "label": "01"
+                },
+                {
+                    "port": "E02",
+                    "connected": "Macierz Dyskowa SAN Synology FS3410 LAN2",
+                    "ip": "172.16.10.32",
+                    "category": "server",
+                    "row": 2,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "Rejestrator Monitoringu NVR 64-Ch Hikvision",
+                    "ip": "172.16.30.100",
+                    "category": "server",
+                    "row": 1,
+                    "label": "03"
+                },
+                {
+                    "port": "E04",
+                    "connected": "Zasilacz UPS Eaton 9PX 11000i SNMP",
+                    "ip": "172.16.99.70",
+                    "category": "other",
+                    "row": 2,
+                    "label": "04"
+                },
+                {
+                    "port": "E05",
+                    "connected": "Zasilacz UPS Eaton 9PX Kopia SNMP",
+                    "ip": "172.16.99.71",
+                    "category": "other",
+                    "row": 1,
+                    "label": "05"
+                },
+                {
+                    "port": "E06",
+                    "connected": "RACK Temp & Humidity Environmental Sensor",
+                    "ip": "172.16.99.80",
+                    "category": "other",
+                    "row": 2,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "Wi-Fi AP - Plant Engineering",
+                    "ip": "172.16.99.101",
+                    "category": "it",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "08"
+                },
+                {
+                    "port": "E09",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "09"
+                },
+                {
+                    "port": "E10",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "10"
+                },
+                {
+                    "port": "E11",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "11"
+                },
+                {
+                    "port": "E12",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "12"
+                },
+                {
+                    "port": "E13",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "13"
+                },
+                {
+                    "port": "E14",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "14"
+                },
+                {
+                    "port": "E15",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "15"
+                },
+                {
+                    "port": "E16",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "16"
+                },
+                {
+                    "port": "E17",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "17"
+                },
+                {
+                    "port": "E18",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "18"
+                },
+                {
+                    "port": "E19",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "19"
+                },
+                {
+                    "port": "E20",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "20"
+                },
+                {
+                    "port": "E21",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "21"
+                },
+                {
+                    "port": "E22",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "22"
+                },
+                {
+                    "port": "E23",
+                    "connected": "TL-SG3428 mdf_server_room E23",
+                    "ip": "172.16.0.2",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "mdf_server_room",
+                    "row": 1,
+                    "label": "23"
+                },
+                {
+                    "port": "E24",
+                    "connected": "RB4011iGS+RM mdf_server_room E03",
+                    "ip": "172.16.0.1",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "mdf_server_room",
+                    "row": 2,
+                    "label": "24"
+                },
+                {
+                    "port": "SFP1",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "space": true,
+                    "label": "25"
+                },
+                {
+                    "port": "SFP2",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "26"
+                },
+                {
+                    "port": "SFP3",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "27"
+                },
+                {
+                    "port": "SFP4",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "28"
+                }
+            ]
+        },
+        {
+            "name": "T2600G-28TS",
+            "ip": "172.16.0.4",
+            "location": "cnc_workshop",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "Frezarka 5-Osiowa DMG MORI DMU 50 (CNC-01)",
+                    "ip": "172.16.20.1",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "01",
+                    "comment": "replace patch cord"
+                },
+                {
+                    "port": "E02",
+                    "connected": "Frezarka 5-Osiowa Hermle C42 (CNC-02)",
+                    "ip": "172.16.20.2",
+                    "category": "machine",
+                    "row": 2,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "Centrum Tokarsko-Frezarskie Mazak Integrex (CNC-03)",
+                    "ip": "172.16.20.3",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "03"
+                },
+                {
+                    "port": "E04",
+                    "connected": "Tokarka CNC Okuma LB3000 (CNC-04)",
+                    "ip": "172.16.20.4",
+                    "category": "machine",
+                    "row": 2,
+                    "label": "04"
+                },
+                {
+                    "port": "E05",
+                    "connected": "Wycinarka Laserowa Fiber Trumpf TruLaser 3030",
+                    "ip": "172.16.20.5",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "05"
+                },
+                {
+                    "port": "E06",
+                    "connected": "Bystronic Xpert CNC Press Brake",
+                    "ip": "172.16.20.6",
+                    "category": "machine",
+                    "row": 2,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "AgieCharmilles Wire EDM Machine",
+                    "ip": "172.16.20.7",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "SolidCAM CAM Programming Workstation",
+                    "ip": "172.16.20.50",
+                    "category": "pc",
+                    "row": 2,
+                    "label": "08"
+                },
+                {
+                    "port": "E09",
+                    "connected": "Machining Process Engineer Workstation",
+                    "ip": "172.16.20.51",
+                    "category": "pc",
+                    "row": 1,
+                    "label": "09"
+                },
+                {
+                    "port": "E10",
+                    "connected": "Matrix Tool Dispenser Terminal",
+                    "ip": "172.16.20.60",
+                    "category": "machine",
+                    "row": 2,
+                    "label": "10"
+                },
+                {
+                    "port": "E11",
+                    "connected": "Mobile QC Tablet CNC 01",
+                    "ip": "172.16.20.71",
+                    "category": "tablet",
+                    "row": 1,
+                    "label": "11"
+                },
+                {
+                    "port": "E12",
+                    "connected": "Mobile QC Tablet CNC 02",
+                    "ip": "172.16.20.72",
+                    "category": "tablet",
+                    "row": 2,
+                    "label": "12"
+                },
+                {
+                    "port": "E13",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "13"
+                },
+                {
+                    "port": "E14",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "14"
+                },
+                {
+                    "port": "E15",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "15"
+                },
+                {
+                    "port": "E16",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "16"
+                },
+                {
+                    "port": "E17",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "17"
+                },
+                {
+                    "port": "E18",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "18"
+                },
+                {
+                    "port": "E19",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "19"
+                },
+                {
+                    "port": "E20",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "20"
+                },
+                {
+                    "port": "E21",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "21"
+                },
+                {
+                    "port": "E22",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "22"
+                },
+                {
+                    "port": "E23",
+                    "connected": "TL-SG2428P cnc_workshop E24",
+                    "ip": "172.16.0.5",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "cnc_workshop",
+                    "row": 1,
+                    "label": "23"
+                },
+                {
+                    "port": "E24",
+                    "connected": "RB4011iGS+RM mdf_server_room E04",
+                    "ip": "172.16.0.1",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "mdf_server_room",
+                    "row": 2,
+                    "label": "24"
+                },
+                {
+                    "port": "SFP1",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "space": true,
+                    "label": "25"
+                },
+                {
+                    "port": "SFP2",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "26"
+                },
+                {
+                    "port": "SFP3",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "27"
+                },
+                {
+                    "port": "SFP4",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "28"
+                }
+            ]
+        },
+        {
+            "name": "TL-SG2428P",
+            "ip": "172.16.0.5",
+            "location": "cnc_workshop",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "Industrial Wi-Fi AP - CNC Workshop",
+                    "ip": "172.16.99.102",
+                    "category": "it",
+                    "row": 1,
+                    "label": "01"
+                },
+                {
+                    "port": "E02",
+                    "connected": "Kamera IP CCTV 01 - Stanowisko Frezarek 5D",
+                    "ip": "172.16.30.1",
+                    "category": "camera",
+                    "row": 2,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "Kamera IP CCTV 02 - Stanowisko Tokarek",
+                    "ip": "172.16.30.2",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "03"
+                },
+                {
+                    "port": "E04",
+                    "connected": "Kamera IP CCTV 03 - Laser i Wycinarki",
+                    "ip": "172.16.30.3",
+                    "category": "camera",
+                    "row": 2,
+                    "label": "04"
+                },
+                {
+                    "port": "E05",
+                    "connected": "IP Camera CCTV 04 - Raw Steel Warehouse",
+                    "ip": "172.16.30.4",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "05"
+                },
+                {
+                    "port": "E06",
+                    "connected": "Kamera Termowizyjna FLIR Monitor Procesu Skrawania",
+                    "ip": "172.16.30.5",
+                    "category": "camera",
+                    "row": 2,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "Ekran Wielkoformatowy SCADA / OEE Hali CNC",
+                    "ip": "172.16.20.80",
+                    "category": "tablet",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "08"
+                },
+                {
+                    "port": "E09",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "09"
+                },
+                {
+                    "port": "E10",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "10"
+                },
+                {
+                    "port": "E11",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "11"
+                },
+                {
+                    "port": "E12",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "12"
+                },
+                {
+                    "port": "E13",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "13"
+                },
+                {
+                    "port": "E14",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "14"
+                },
+                {
+                    "port": "E15",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "15"
+                },
+                {
+                    "port": "E16",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "16"
+                },
+                {
+                    "port": "E17",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "17"
+                },
+                {
+                    "port": "E18",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "18"
+                },
+                {
+                    "port": "E19",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "19"
+                },
+                {
+                    "port": "E20",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "20"
+                },
+                {
+                    "port": "E21",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "21"
+                },
+                {
+                    "port": "E22",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "22"
+                },
+                {
+                    "port": "E23",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "23"
+                },
+                {
+                    "port": "E24",
+                    "connected": "T2600G-28TS cnc_workshop E23",
+                    "ip": "172.16.0.4",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "cnc_workshop",
+                    "row": 2,
+                    "label": "24"
+                },
+                {
+                    "port": "SFP25",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "space": true,
+                    "label": "25"
+                },
+                {
+                    "port": "SFP26",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "26"
+                },
+                {
+                    "port": "SFP27",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "27"
+                },
+                {
+                    "port": "SFP28",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "28"
+                }
+            ]
+        },
+        {
+            "name": "USW-Enterprise-8-PoE",
+            "ip": "172.16.0.6",
+            "location": "testing_lab",
+            "ports": [
+                {
+                    "port": "E1",
+                    "connected": "RB4011iGS+RM mdf_server_room E05",
+                    "ip": "172.16.0.1",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "mdf_server_room",
+                    "row": 1,
+                    "label": "1"
+                },
+                {
+                    "port": "E2",
+                    "connected": "Zeiss Coordinate Measuring Machine (CMM)",
+                    "ip": "172.16.40.10",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "2",
+                    "comment": "check PoE line - occasional drops"
+                },
+                {
+                    "port": "E3",
+                    "connected": "Analizator Widma EMC Rohde & Schwarz",
+                    "ip": "172.16.40.11",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "3"
+                },
+                {
+                    "port": "E4",
+                    "connected": "Mikroskop Elektronowy SEM Cyfrowy",
+                    "ip": "172.16.40.12",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "4"
+                },
+                {
+                    "port": "E5",
+                    "connected": "Access Point Wi-Fi Cleanroom ISO-7",
+                    "ip": "172.16.99.103",
+                    "category": "it",
+                    "row": 1,
+                    "label": "5"
+                },
+                {
+                    "port": "E6",
+                    "connected": "IP Camera CCTV - Cleanroom Airlock",
+                    "ip": "172.16.30.20",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "6"
+                },
+                {
+                    "port": "E7",
+                    "connected": "TL-SG1016DE testing_lab E16",
+                    "ip": "172.16.0.7",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "testing_lab",
+                    "row": 1,
+                    "label": "7"
+                },
+                {
+                    "port": "E8",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "8"
+                },
+                {
+                    "port": "SFP1",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "space": true,
+                    "label": "9"
+                },
+                {
+                    "port": "SFP2",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "10"
+                }
+            ]
+        },
+        {
+            "name": "TL-SG1016DE",
+            "ip": "172.16.0.7",
+            "location": "testing_lab",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "3D Metrology Engineering Workstation",
+                    "ip": "172.16.40.21",
+                    "category": "pc",
+                    "row": 1,
+                    "label": "01"
+                },
+                {
+                    "port": "E02",
+                    "connected": "Tensile Testing Engineering Workstation",
+                    "ip": "172.16.40.22",
+                    "category": "pc",
+                    "row": 1,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "NDT Engineering Workstation",
+                    "ip": "172.16.40.23",
+                    "category": "pc",
+                    "row": 1,
+                    "label": "03"
+                },
+                {
+                    "port": "E04",
+                    "connected": "Quality Reports & Certificate Printer",
+                    "ip": "172.16.40.201",
+                    "category": "printer",
+                    "row": 1,
+                    "label": "04"
+                },
+                {
+                    "port": "E05",
+                    "connected": "Drukarka Etykiet Znakowania Partii QA",
+                    "ip": "172.16.40.202",
+                    "category": "printer",
+                    "row": 1,
+                    "label": "05"
+                },
+                {
+                    "port": "E06",
+                    "connected": "Telefon VoIP Kierownik Laboratorium",
+                    "ip": "172.16.40.220",
+                    "category": "phone",
+                    "row": 1,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "MetOne Cleanroom Particle Counter",
+                    "ip": "172.16.40.30",
+                    "category": "other",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "08"
+                },
+                {
+                    "port": "E09",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "09"
+                },
+                {
+                    "port": "E10",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "10"
+                },
+                {
+                    "port": "E11",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "11"
+                },
+                {
+                    "port": "E12",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "12"
+                },
+                {
+                    "port": "E13",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "13"
+                },
+                {
+                    "port": "E14",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "14"
+                },
+                {
+                    "port": "E15",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "15"
+                },
+                {
+                    "port": "E16",
+                    "connected": "USW-Enterprise-8-PoE testing_lab E7",
+                    "ip": "172.16.0.6",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "testing_lab",
+                    "row": 1,
+                    "label": "16"
+                }
+            ]
+        },
+        {
+            "name": "TL-SG1428PE",
+            "ip": "172.16.0.8",
+            "location": "robotics_bay",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "Kontroler Robota Spawalniczego Fanuc R-30iB (R-01)",
+                    "ip": "172.16.50.1",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "01"
+                },
+                {
+                    "port": "E02",
+                    "connected": "Kontroler Robota Zgrzewalniczego KUKA KR C4 (R-02)",
+                    "ip": "172.16.50.2",
+                    "category": "machine",
+                    "row": 2,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "Kontroler Robota Paletyzatora ABB IRC5 (R-03)",
+                    "ip": "172.16.50.3",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "03"
+                },
+                {
+                    "port": "E04",
+                    "connected": "Pilz PNOZmulti Safety Controller",
+                    "ip": "172.16.50.4",
+                    "category": "machine",
+                    "row": 2,
+                    "label": "04"
+                },
+                {
+                    "port": "E05",
+                    "connected": "Panel Operatorski HMI Cela Robota 01",
+                    "ip": "172.16.50.11",
+                    "category": "tablet",
+                    "row": 1,
+                    "label": "05"
+                },
+                {
+                    "port": "E06",
+                    "connected": "Panel Operatorski HMI Cela Robota 02",
+                    "ip": "172.16.50.12",
+                    "category": "tablet",
+                    "row": 2,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "Sick deTec4 Safety Light Curtain - Cell 1",
+                    "ip": "172.16.50.15",
+                    "category": "other",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "Sick deTec4 Safety Light Curtain - Cell 2",
+                    "ip": "172.16.50.16",
+                    "category": "other",
+                    "row": 2,
+                    "label": "08"
+                },
+                {
+                    "port": "E09",
+                    "connected": "Kamera IP CCTV Cela Spawalnicza R-01",
+                    "ip": "172.16.30.31",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "09"
+                },
+                {
+                    "port": "E10",
+                    "connected": "Kamera IP CCTV Cela Zgrzewalnicza R-02",
+                    "ip": "172.16.30.32",
+                    "category": "camera",
+                    "row": 2,
+                    "label": "10"
+                },
+                {
+                    "port": "E11",
+                    "connected": "IP Camera CCTV - Part Loading Area",
+                    "ip": "172.16.30.33",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "11"
+                },
+                {
+                    "port": "E12",
+                    "connected": "Kamera IP CCTV Korytarz Ewakuacyjny Robotyki",
+                    "ip": "172.16.30.34",
+                    "category": "camera",
+                    "row": 2,
+                    "label": "12"
+                },
+                {
+                    "port": "E13",
+                    "connected": "Industrial Wi-Fi AP - Robotics Bay",
+                    "ip": "172.16.99.104",
+                    "category": "it",
+                    "row": 1,
+                    "label": "13"
+                },
+                {
+                    "port": "E14",
+                    "connected": "Stanowisko Brygadzisty Spawalni",
+                    "ip": "172.16.50.50",
+                    "category": "pc",
+                    "row": 2,
+                    "label": "14"
+                },
+                {
+                    "port": "E15",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "15"
+                },
+                {
+                    "port": "E16",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "16"
+                },
+                {
+                    "port": "E17",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "17"
+                },
+                {
+                    "port": "E18",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "18"
+                },
+                {
+                    "port": "E19",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "19"
+                },
+                {
+                    "port": "E20",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "20"
+                },
+                {
+                    "port": "E21",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "21"
+                },
+                {
+                    "port": "E22",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "22"
+                },
+                {
+                    "port": "E23",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "23"
+                },
+                {
+                    "port": "E24",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "24"
+                },
+                {
+                    "port": "E25",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "25"
+                },
+                {
+                    "port": "E26",
+                    "connected": "TL-SG3428 mdf_serwerownia E21",
+                    "ip": "172.16.0.2",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "mdf_server_room",
+                    "row": 2,
+                    "label": "26"
+                },
+                {
+                    "port": "SFP27",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "space": true,
+                    "label": "27"
+                },
+                {
+                    "port": "SFP28",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "28"
+                }
+            ]
+        },
+        {
+            "name": "SG350-10",
+            "ip": "172.16.0.9",
+            "location": "maintenance_shop",
+            "ports": [
+                {
+                    "port": "E1",
+                    "connected": "TL-SG3428 mdf_serwerownia E22",
+                    "ip": "172.16.0.2",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "mdf_server_room",
+                    "row": 1,
+                    "label": "1"
+                },
+                {
+                    "port": "E2",
+                    "connected": "Lead Maintenance Mechanic Workstation",
+                    "ip": "172.16.60.10",
+                    "category": "pc",
+                    "row": 1,
+                    "label": "2"
+                },
+                {
+                    "port": "E3",
+                    "connected": "Automation Engineer Workstation",
+                    "ip": "172.16.60.11",
+                    "category": "pc",
+                    "row": 1,
+                    "label": "3"
+                },
+                {
+                    "port": "E4",
+                    "connected": "Atlas Copco Screw Compressor Telemetry Gateway",
+                    "ip": "172.16.60.20",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "4"
+                },
+                {
+                    "port": "E5",
+                    "connected": "Main Switchboard Power Quality Analyzer",
+                    "ip": "172.16.60.21",
+                    "category": "other",
+                    "row": 1,
+                    "label": "5"
+                },
+                {
+                    "port": "E6",
+                    "connected": "CAT Diesel Generator Controller",
+                    "ip": "172.16.60.22",
+                    "category": "other",
+                    "row": 1,
+                    "label": "6"
+                },
+                {
+                    "port": "E7",
+                    "connected": "Tablet Diagnostyczny Utrzymania Ruchu UR-1",
+                    "ip": "172.16.60.51",
+                    "category": "tablet",
+                    "row": 1,
+                    "label": "7"
+                },
+                {
+                    "port": "E8",
+                    "connected": "IP Camera CCTV - Main Low-Voltage Switchgear",
+                    "ip": "172.16.30.41",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "8"
+                },
+                {
+                    "port": "SFP1",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "space": true,
+                    "label": "9"
+                },
+                {
+                    "port": "SFP2",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "10"
+                }
+            ]
+        }
+    ]
+}

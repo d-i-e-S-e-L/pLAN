@@ -1,0 +1,1372 @@
+{
+    "location_name": "Facility A - Logistics Hub",
+    "images_folder": "",
+    "map_svg": "<svg viewBox=\"0 0 1100 650\" xmlns=\"http://www.w3.org/2000/svg\">\n    <style>\n        .outer-wall { fill: none; stroke: #2c3e50; stroke-width: 3; stroke-linejoin: round; }\n        .inner-wall { fill: none; stroke: #2c3e50; stroke-width: 1.8; stroke-linecap: square; }\n    </style>\n<rect x=\"50\" y=\"50\" width=\"1000\" height=\"550\" class=\"outer-wall\" />\n\n<line x1=\"270\" y1=\"50\" x2=\"270\" y2=\"600\" class=\"inner-wall\" />\n<line x1=\"50\" y1=\"230\" x2=\"270\" y2=\"230\" class=\"inner-wall\" />\n<line x1=\"270\" y1=\"330\" x2=\"820\" y2=\"330\" class=\"inner-wall\" />\n<line x1=\"820\" y1=\"50\" x2=\"820\" y2=\"600\" class=\"inner-wall\" />\n</svg>",
+    "rack_coordinates": {
+        "server_room": {
+            "x": 160,
+            "y": 140,
+            "label_side": "bottom",
+            "label_align": "center",
+            "comment": "rack door lock sticks"
+        },
+        "office": {
+            "x": 160,
+            "y": 415,
+            "label_side": "top",
+            "label_align": "center"
+        },
+        "high_bay_warehouse": {
+            "x": 545,
+            "y": 190,
+            "label_side": "bottom",
+            "label_align": "center"
+        },
+        "sorting_area": {
+            "x": 545,
+            "y": 465,
+            "label_side": "top",
+            "label_align": "center"
+        },
+        "loading_dock": {
+            "x": 935,
+            "y": 325,
+            "label_side": "left",
+            "label_align": "center"
+        }
+    },
+    "devices": [
+        {
+            "name": "CCR1009-7G-1C-1S+",
+            "ip": "10.10.0.1",
+            "location": "server_room",
+            "ports": [
+                {
+                    "port": "SFP1",
+                    "connected": "TL-SG3428X server_room SFP25",
+                    "ip": "10.10.0.2",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "server_room",
+                    "row": 1,
+                    "label": "SFP"
+                },
+                {
+                    "port": "Combo1",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "C"
+                },
+                {
+                    "port": "E1",
+                    "connected": "Main WAN Gateway (1Gbps Fiber BGP)",
+                    "ip": "198.51.100.2",
+                    "category": "other",
+                    "row": 1,
+                    "label": "1",
+                    "space": true
+                },
+                {
+                    "port": "E2",
+                    "connected": "Backup WAN 5G LTE Failover Gateway",
+                    "ip": "198.51.100.10",
+                    "category": "other",
+                    "row": 1,
+                    "label": "2",
+                    "comment": "replace SIM card"
+                },
+                {
+                    "port": "E3",
+                    "connected": "TL-SG3428X server_room E24",
+                    "ip": "10.10.0.2",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "server_room",
+                    "row": 1,
+                    "label": "3"
+                },
+                {
+                    "port": "E4",
+                    "connected": "T2600G-28MPS server_room E24",
+                    "ip": "10.10.0.3",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "server_room",
+                    "row": 1,
+                    "label": "4"
+                },
+                {
+                    "port": "E5",
+                    "connected": "WMS Primary Database Cluster",
+                    "ip": "10.10.10.10",
+                    "category": "server",
+                    "row": 1,
+                    "label": "5"
+                },
+                {
+                    "port": "E6",
+                    "connected": "WMS Application Server / API Gateway",
+                    "ip": "10.10.10.11",
+                    "category": "server",
+                    "row": 1,
+                    "label": "6"
+                },
+                {
+                    "port": "E7",
+                    "connected": "Out-of-Band (OOB) Server Room Management",
+                    "ip": "10.10.99.254",
+                    "category": "other",
+                    "row": 1,
+                    "label": "7"
+                }
+            ],
+            "comment": "add RAM, scheduled upgrade to RouterOS v7"
+        },
+        {
+            "name": "TL-SG3428X",
+            "ip": "10.10.0.2",
+            "location": "server_room",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "Veeam Backup Repository Server",
+                    "ip": "10.10.10.20",
+                    "category": "server",
+                    "row": 1,
+                    "label": "01"
+                },
+                {
+                    "port": "E02",
+                    "connected": "Synology RS422+ NAS LAN1 (WMS Backups)",
+                    "ip": "10.10.10.30",
+                    "category": "server",
+                    "row": 2,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "Synology RS422+ NAS LAN2 (iSCSI LUN)",
+                    "ip": "10.10.10.31",
+                    "category": "server",
+                    "row": 1,
+                    "label": "03"
+                },
+                {
+                    "port": "E04",
+                    "connected": "Active Directory Domain Controller DC01",
+                    "ip": "10.10.10.5",
+                    "category": "server",
+                    "row": 2,
+                    "label": "04"
+                },
+                {
+                    "port": "E05",
+                    "connected": "Proxmox VE-01 Virtualization Node",
+                    "ip": "10.10.10.51",
+                    "category": "server",
+                    "row": 1,
+                    "label": "05"
+                },
+                {
+                    "port": "E06",
+                    "connected": "Proxmox VE-02 Virtualization Node",
+                    "ip": "10.10.10.52",
+                    "category": "server",
+                    "row": 2,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "Dell iDRAC Server Management Module",
+                    "ip": "10.10.99.11",
+                    "category": "server",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "APC Smart-UPS SNMP Network Card",
+                    "ip": "10.10.99.200",
+                    "category": "other",
+                    "row": 2,
+                    "label": "08",
+                    "comment": "management access on port 5301"
+                },
+                {
+                    "port": "E09",
+                    "connected": "Satel Intrusion Alarm Control Panel",
+                    "ip": "10.10.10.8",
+                    "category": "other",
+                    "row": 1,
+                    "label": "09"
+                },
+                {
+                    "port": "E10",
+                    "connected": "HVAC Precision Cooling Controller",
+                    "ip": "10.10.10.9",
+                    "category": "other",
+                    "row": 2,
+                    "label": "10"
+                },
+                {
+                    "port": "E11",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "11"
+                },
+                {
+                    "port": "E12",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "12"
+                },
+                {
+                    "port": "E13",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "13"
+                },
+                {
+                    "port": "E14",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "14"
+                },
+                {
+                    "port": "E15",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "15"
+                },
+                {
+                    "port": "E16",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "16"
+                },
+                {
+                    "port": "E17",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "17"
+                },
+                {
+                    "port": "E18",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "18"
+                },
+                {
+                    "port": "E19",
+                    "connected": "GS1900-24E office E01",
+                    "ip": "10.10.0.4",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "office",
+                    "row": 1,
+                    "label": "19"
+                },
+                {
+                    "port": "E20",
+                    "connected": "TL-SG1428PE sorting_area E26",
+                    "ip": "10.10.0.6",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "sorting_area",
+                    "row": 2,
+                    "label": "20"
+                },
+                {
+                    "port": "E21",
+                    "connected": "PoE switch 8+2 loading_dock W01",
+                    "ip": "10.10.0.7",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "loading_dock",
+                    "row": 1,
+                    "label": "21"
+                },
+                {
+                    "port": "E22",
+                    "connected": "TL-SG2428P high_bay_warehouse E24",
+                    "ip": "10.10.0.5",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "high_bay_warehouse",
+                    "row": 2,
+                    "label": "22"
+                },
+                {
+                    "port": "E23",
+                    "connected": "T2600G-28MPS server_room E23",
+                    "ip": "10.10.0.3",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "server_room",
+                    "row": 1,
+                    "label": "23"
+                },
+                {
+                    "port": "E24",
+                    "connected": "CCR1009-7G-1C-1S+ server_room E3",
+                    "ip": "10.10.0.1",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "server_room",
+                    "row": 2,
+                    "label": "24"
+                },
+                {
+                    "port": "SFP25",
+                    "connected": "CCR1009-7G-1C-1S+ server_room SFP1",
+                    "ip": "10.10.0.1",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "server_room",
+                    "row": 2,
+                    "space": true,
+                    "label": "25"
+                },
+                {
+                    "port": "SFP26",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "26"
+                },
+                {
+                    "port": "SFP27",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "27"
+                },
+                {
+                    "port": "SFP28",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "28"
+                }
+            ]
+        },
+        {
+            "name": "T2600G-28MPS",
+            "ip": "10.10.0.3",
+            "location": "server_room",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "IP Camera CCTV 01 - Main Entrance Airlock",
+                    "ip": "10.10.30.1",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "01"
+                },
+                {
+                    "port": "E02",
+                    "connected": "IP Camera CCTV 02 - Server Room Racks",
+                    "ip": "10.10.30.2",
+                    "category": "camera",
+                    "row": 2,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "IP Camera CCTV 03 - Office Hallway",
+                    "ip": "10.10.30.3",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "03",
+                    "comment": "loose patch connector, re-terminate"
+                },
+                {
+                    "port": "E04",
+                    "connected": "IP Camera CCTV 04 - Main Courtyard",
+                    "ip": "10.10.30.4",
+                    "category": "camera",
+                    "row": 2,
+                    "label": "04"
+                },
+                {
+                    "port": "E05",
+                    "connected": "IP Camera CCTV 05 - Main Entry Gate",
+                    "ip": "10.10.30.5",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "05"
+                },
+                {
+                    "port": "E06",
+                    "connected": "IP Camera CCTV 06 - Staff Parking",
+                    "ip": "10.10.30.6",
+                    "category": "camera",
+                    "row": 2,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "Access Control Card Reader - Server Room",
+                    "ip": "10.10.10.61",
+                    "category": "other",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "Wideodomofon IP Brama Wjazdowa",
+                    "ip": "10.10.10.62",
+                    "category": "phone",
+                    "row": 2,
+                    "label": "08"
+                },
+                {
+                    "port": "E09",
+                    "connected": "Access Point Wi-Fi Biuro Administracji",
+                    "ip": "10.10.99.101",
+                    "category": "it",
+                    "row": 1,
+                    "label": "09"
+                },
+                {
+                    "port": "E10",
+                    "connected": "Rejestrator CCTV Hikvision NVR 64ch",
+                    "ip": "10.10.30.100",
+                    "category": "server",
+                    "row": 2,
+                    "label": "10"
+                },
+                {
+                    "port": "E11",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "11"
+                },
+                {
+                    "port": "E12",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "12"
+                },
+                {
+                    "port": "E13",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "13"
+                },
+                {
+                    "port": "E14",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "14"
+                },
+                {
+                    "port": "E15",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "15"
+                },
+                {
+                    "port": "E16",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "16"
+                },
+                {
+                    "port": "E17",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "17"
+                },
+                {
+                    "port": "E18",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "18"
+                },
+                {
+                    "port": "E19",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "19"
+                },
+                {
+                    "port": "E20",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "20"
+                },
+                {
+                    "port": "E21",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "21"
+                },
+                {
+                    "port": "E22",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "22"
+                },
+                {
+                    "port": "E23",
+                    "connected": "TL-SG3428X server_room E23",
+                    "ip": "10.10.0.2",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "server_room",
+                    "row": 1,
+                    "label": "23"
+                },
+                {
+                    "port": "E24",
+                    "connected": "CCR1009-7G-1C-1S+ serwerownia E4",
+                    "ip": "10.10.0.1",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "server_room",
+                    "row": 2,
+                    "label": "24"
+                },
+                {
+                    "port": "SFP1",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "space": true,
+                    "label": "25"
+                },
+                {
+                    "port": "SFP2",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "26"
+                },
+                {
+                    "port": "SFP3",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "27"
+                },
+                {
+                    "port": "SFP4",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "28"
+                }
+            ]
+        },
+        {
+            "name": "GS1900-24E",
+            "ip": "10.10.0.4",
+            "location": "office",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "TL-SG3428X server_room E19",
+                    "ip": "10.10.0.2",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "server_room",
+                    "row": 1,
+                    "label": "01"
+                },
+                {
+                    "port": "E02",
+                    "connected": "Wi-Fi AP - Dispatch Office",
+                    "ip": "10.10.99.102",
+                    "category": "it",
+                    "row": 2,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "Hub Manager Workstation",
+                    "ip": "10.10.20.10",
+                    "category": "pc",
+                    "row": 1,
+                    "label": "03"
+                },
+                {
+                    "port": "E04",
+                    "connected": "Lead Dispatcher Workstation",
+                    "ip": "10.10.20.11",
+                    "category": "pc",
+                    "row": 2,
+                    "label": "04"
+                },
+                {
+                    "port": "E05",
+                    "connected": "Stanowisko Dyspozytor Spedycji 01",
+                    "ip": "10.10.20.12",
+                    "category": "pc",
+                    "row": 1,
+                    "label": "05"
+                },
+                {
+                    "port": "E06",
+                    "connected": "Stanowisko Dyspozytor Spedycji 02",
+                    "ip": "10.10.20.13",
+                    "category": "pc",
+                    "row": 2,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "Stanowisko Planista Tras Krajowych",
+                    "ip": "10.10.20.14",
+                    "category": "pc",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "International Route Planner Workstation",
+                    "ip": "10.10.20.15",
+                    "category": "pc",
+                    "row": 2,
+                    "label": "08"
+                },
+                {
+                    "port": "E09",
+                    "connected": "Invoicing Dept Workstation 01",
+                    "ip": "10.10.20.16",
+                    "category": "pc",
+                    "row": 1,
+                    "label": "09"
+                },
+                {
+                    "port": "E10",
+                    "connected": "Returns & Claims Workstation",
+                    "ip": "10.10.20.17",
+                    "category": "pc",
+                    "row": 2,
+                    "label": "10"
+                },
+                {
+                    "port": "E11",
+                    "connected": "Customer Service Workstation",
+                    "ip": "10.10.20.18",
+                    "category": "pc",
+                    "row": 1,
+                    "label": "11"
+                },
+                {
+                    "port": "E12",
+                    "connected": "Network MFP Shipping Docs Printer",
+                    "ip": "10.10.20.201",
+                    "category": "printer",
+                    "row": 2,
+                    "label": "12"
+                },
+                {
+                    "port": "E13",
+                    "connected": "Drukarka Sieciowa MFP Faktur",
+                    "ip": "10.10.20.202",
+                    "category": "printer",
+                    "row": 1,
+                    "label": "13"
+                },
+                {
+                    "port": "E14",
+                    "connected": "Drukarka Etykiet Kurierskich Zebra",
+                    "ip": "10.10.20.203",
+                    "category": "printer",
+                    "row": 2,
+                    "label": "14"
+                },
+                {
+                    "port": "E15",
+                    "connected": "VoIP Phone - Lead Dispatcher",
+                    "ip": "10.10.20.220",
+                    "category": "phone",
+                    "row": 1,
+                    "label": "15"
+                },
+                {
+                    "port": "E16",
+                    "connected": "Telefon VoIP Spedycja",
+                    "ip": "10.10.20.221",
+                    "category": "phone",
+                    "row": 2,
+                    "label": "16"
+                },
+                {
+                    "port": "E17",
+                    "connected": "Telefon VoIP Sekretariat Hub",
+                    "ip": "10.10.20.222",
+                    "category": "phone",
+                    "row": 1,
+                    "label": "17"
+                },
+                {
+                    "port": "E18",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "18"
+                },
+                {
+                    "port": "E19",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "19"
+                },
+                {
+                    "port": "E20",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "20"
+                },
+                {
+                    "port": "E21",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "21"
+                },
+                {
+                    "port": "E22",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "22"
+                },
+                {
+                    "port": "E23",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "23"
+                },
+                {
+                    "port": "E24",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "24"
+                }
+            ]
+        },
+        {
+            "name": "TL-SG2428P",
+            "ip": "10.10.0.5",
+            "location": "high_bay_warehouse",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "Wi-Fi AP - High Bay Warehouse Aisle 1-4",
+                    "ip": "10.10.99.103",
+                    "category": "it",
+                    "row": 1,
+                    "label": "01"
+                },
+                {
+                    "port": "E02",
+                    "connected": "Wi-Fi AP - High Bay Warehouse Aisle 5-8",
+                    "ip": "10.10.99.104",
+                    "category": "it",
+                    "row": 2,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "Wi-Fi AP - High Bay Warehouse Aisle 9-12",
+                    "ip": "10.10.99.105",
+                    "category": "it",
+                    "row": 1,
+                    "label": "03"
+                },
+                {
+                    "port": "E04",
+                    "connected": "Pallet Stacker Crane PLC U-01",
+                    "ip": "10.10.40.11",
+                    "category": "machine",
+                    "row": 2,
+                    "label": "04"
+                },
+                {
+                    "port": "E05",
+                    "connected": "Pallet Stacker Crane PLC U-02",
+                    "ip": "10.10.40.12",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "05"
+                },
+                {
+                    "port": "E06",
+                    "connected": "Pallet Stacker Crane PLC U-03",
+                    "ip": "10.10.40.13",
+                    "category": "machine",
+                    "row": 2,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "Forklift WMS Mobile Tablet 01",
+                    "ip": "10.10.40.51",
+                    "category": "tablet",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "Forklift WMS Mobile Tablet 02",
+                    "ip": "10.10.40.52",
+                    "category": "tablet",
+                    "row": 2,
+                    "label": "08"
+                },
+                {
+                    "port": "E09",
+                    "connected": "Forklift WMS Mobile Tablet 03",
+                    "ip": "10.10.40.53",
+                    "category": "tablet",
+                    "row": 1,
+                    "label": "09"
+                },
+                {
+                    "port": "E10",
+                    "connected": "Forklift WMS Mobile Tablet 04",
+                    "ip": "10.10.40.54",
+                    "category": "tablet",
+                    "row": 2,
+                    "label": "10"
+                },
+                {
+                    "port": "E11",
+                    "connected": "IP Camera CCTV 11 - Rack Aisle North",
+                    "ip": "10.10.30.11",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "11"
+                },
+                {
+                    "port": "E12",
+                    "connected": "IP Camera CCTV 12 - Rack Aisle South",
+                    "ip": "10.10.30.12",
+                    "category": "camera",
+                    "row": 2,
+                    "label": "12"
+                },
+                {
+                    "port": "E13",
+                    "connected": "Kamera IP CCTV 13 - Strefa Buforowa Palet",
+                    "ip": "10.10.30.13",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "13"
+                },
+                {
+                    "port": "E14",
+                    "connected": "IP Camera CCTV 14 - Emergency Exit",
+                    "ip": "10.10.30.14",
+                    "category": "camera",
+                    "row": 2,
+                    "label": "14"
+                },
+                {
+                    "port": "E15",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "15"
+                },
+                {
+                    "port": "E16",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "16"
+                },
+                {
+                    "port": "E17",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "17"
+                },
+                {
+                    "port": "E18",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "18"
+                },
+                {
+                    "port": "E19",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "19"
+                },
+                {
+                    "port": "E20",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "20"
+                },
+                {
+                    "port": "E21",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "21"
+                },
+                {
+                    "port": "E22",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "22"
+                },
+                {
+                    "port": "E23",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "23"
+                },
+                {
+                    "port": "E24",
+                    "connected": "TL-SG3428X server_room E22",
+                    "ip": "10.10.0.2",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "server_room",
+                    "row": 2,
+                    "label": "24"
+                },
+                {
+                    "port": "SFP25",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "space": true,
+                    "label": "25"
+                },
+                {
+                    "port": "SFP26",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "26"
+                },
+                {
+                    "port": "SFP27",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "27"
+                },
+                {
+                    "port": "SFP28",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "28"
+                }
+            ]
+        },
+        {
+            "name": "TL-SG1428PE",
+            "ip": "10.10.0.6",
+            "location": "sorting_area",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "Main Sorter Conveyor PLC Siemens S7",
+                    "ip": "10.10.50.1",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "01"
+                },
+                {
+                    "port": "E02",
+                    "connected": "SICK 360 Barcode Scanning Tunnel",
+                    "ip": "10.10.50.2",
+                    "category": "machine",
+                    "row": 2,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "DWS Dynamic In-Motion Scale",
+                    "ip": "10.10.50.3",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "03"
+                },
+                {
+                    "port": "E04",
+                    "connected": "Skaner Wolumetryczny 3D Wymiary Paczek",
+                    "ip": "10.10.50.4",
+                    "category": "machine",
+                    "row": 2,
+                    "label": "04"
+                },
+                {
+                    "port": "E05",
+                    "connected": "Infeed Line Operator HMI Panel",
+                    "ip": "10.10.50.11",
+                    "category": "tablet",
+                    "row": 1,
+                    "label": "05"
+                },
+                {
+                    "port": "E06",
+                    "connected": "Panel Operatorski HMI Zrzuty Kierunkowe",
+                    "ip": "10.10.50.12",
+                    "category": "tablet",
+                    "row": 2,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "Ekran Statusowy Linii SCADA / Andon 65\"",
+                    "ip": "10.10.50.20",
+                    "category": "tablet",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "Automatyczny Aplikator Etykiet Sortowniczych",
+                    "ip": "10.10.50.30",
+                    "category": "printer",
+                    "row": 2,
+                    "label": "08"
+                },
+                {
+                    "port": "E09",
+                    "connected": "Kamera IP CCTV 21 - Wjazd Sortera",
+                    "ip": "10.10.30.21",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "09"
+                },
+                {
+                    "port": "E10",
+                    "connected": "IP Camera CCTV 22 - Parcel Chutes North",
+                    "ip": "10.10.30.22",
+                    "category": "camera",
+                    "row": 2,
+                    "label": "10"
+                },
+                {
+                    "port": "E11",
+                    "connected": "IP Camera CCTV 23 - Parcel Chutes South",
+                    "ip": "10.10.30.23",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "11"
+                },
+                {
+                    "port": "E12",
+                    "connected": "IP Camera CCTV 24 - Manual Packing Area",
+                    "ip": "10.10.30.24",
+                    "category": "camera",
+                    "row": 2,
+                    "label": "12"
+                },
+                {
+                    "port": "E13",
+                    "connected": "Stanowisko Weryfikacji Paczek Niezgodnych",
+                    "ip": "10.10.20.35",
+                    "category": "pc",
+                    "row": 1,
+                    "label": "13"
+                },
+                {
+                    "port": "E14",
+                    "connected": "Przycisk Awaryjnego Zatrzymania E-STOP Monitor",
+                    "ip": "10.10.50.99",
+                    "category": "other",
+                    "row": 2,
+                    "label": "14"
+                },
+                {
+                    "port": "E15",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "15"
+                },
+                {
+                    "port": "E16",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "16"
+                },
+                {
+                    "port": "E17",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "17"
+                },
+                {
+                    "port": "E18",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "18"
+                },
+                {
+                    "port": "E19",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "19"
+                },
+                {
+                    "port": "E20",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "20"
+                },
+                {
+                    "port": "E21",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "21"
+                },
+                {
+                    "port": "E22",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "22"
+                },
+                {
+                    "port": "E23",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "23"
+                },
+                {
+                    "port": "E24",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "24"
+                },
+                {
+                    "port": "E25",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "25"
+                },
+                {
+                    "port": "E26",
+                    "connected": "TL-SG3428X server_room E20",
+                    "ip": "10.10.0.2",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "server_room",
+                    "row": 2,
+                    "label": "26"
+                },
+                {
+                    "port": "SFP27",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "space": true,
+                    "label": "27"
+                },
+                {
+                    "port": "SFP28",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 2,
+                    "label": "28"
+                }
+            ]
+        },
+        {
+            "name": "PoE Switch 8+2",
+            "ip": "10.10.0.7",
+            "location": "loading_dock",
+            "ports": [
+                {
+                    "port": "E01",
+                    "connected": "IP Camera CCTV 31 - Loading Docks 1-3",
+                    "ip": "10.10.30.31",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "01",
+                    "comment": "check PoE line after thunderstorm"
+                },
+                {
+                    "port": "E02",
+                    "connected": "IP Camera CCTV 32 - Loading Docks 4-6",
+                    "ip": "10.10.30.32",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "02"
+                },
+                {
+                    "port": "E03",
+                    "connected": "IP Camera ANPR - Truck License Plate Recognition",
+                    "ip": "10.10.30.33",
+                    "category": "camera",
+                    "row": 1,
+                    "label": "03"
+                },
+                {
+                    "port": "E04",
+                    "connected": "Promstahl Dock Door & Shelter Controller",
+                    "ip": "10.10.60.10",
+                    "category": "machine",
+                    "row": 1,
+                    "label": "04"
+                },
+                {
+                    "port": "E05",
+                    "connected": "Terminal Kierowcy Odprawy Awizacji (Infokiosk)",
+                    "ip": "10.10.60.20",
+                    "category": "tablet",
+                    "row": 1,
+                    "label": "05"
+                },
+                {
+                    "port": "E06",
+                    "connected": "Outdoor Wi-Fi AP - Yard & Staging Area",
+                    "ip": "10.10.99.106",
+                    "category": "it",
+                    "row": 1,
+                    "label": "06"
+                },
+                {
+                    "port": "E07",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "07"
+                },
+                {
+                    "port": "E08",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "08"
+                },
+                {
+                    "port": "W01",
+                    "connected": "TL-SG3428X server_room E21",
+                    "ip": "10.10.0.2",
+                    "category": "it",
+                    "is_uplink": true,
+                    "target_location": "server_room",
+                    "row": 1,
+                    "space": true,
+                    "label": "09"
+                },
+                {
+                    "port": "W02",
+                    "connected": "",
+                    "ip": "",
+                    "category": "empty",
+                    "row": 1,
+                    "label": "10"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,2478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pLAN | Interactive Network Map</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --panel-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --border-color: #bdc3c7;
+            --accent: #2980b9;
+            --accent-hover: #3498db;
+            --accent2: #21D925;
+            --accent2-hover: #49E34C;
+            
+            --port-empty: #ffffff;
+            --port-camera: #e74c3c;
+            --port-pc: #91cdf2;
+            --port-printer: #9b59b6;
+            --port-server: #34495e;
+            --port-phone: #e67e22;
+            --port-machine: #0a34eb;
+            --port-it: #2ecc71;
+            --port-other: #95a5a6;
+            --port-tablet: #f1c40f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+			background-color: var(--panel-bg);
+			padding: 10px 20px;
+			display: grid;
+			grid-template-columns: 1fr auto 1fr;
+			align-items: center;
+			border-bottom: 1px solid var(--border-color);
+			box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+			z-index: 10;
+		}
+
+		.header-left {
+			justify-self: start;
+		}
+
+		.header-center {
+			justify-self: center;
+		}
+
+		.header-right {
+			justify-self: end;
+			display: flex;
+			gap: 10px;
+			align-items: center;
+		}
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 0;
+            outline: none;
+            width: 300px;
+            font-size: 14px;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+        }
+
+        #search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+
+        .search-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f1f1;
+            font-size: 13px;
+        }
+
+        .search-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .search-item strong {
+            color: var(--accent);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        button, .upload-label {
+			box-sizing: border-box;
+			height: 36px;
+			width: 36px;
+			padding: 0;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			border: none;
+			border-radius: 0px;
+			cursor: pointer;
+			transition: background-color 0.2s;
+		}
+
+		button svg, .upload-label svg {
+			width: 20px;
+			height: 20px;
+			stroke: currentColor;
+			stroke-width: 2;
+			fill: none;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+		}
+
+		button {
+			background-color: var(--accent);
+			color: white;
+		}
+		button:hover { background-color: var(--accent-hover); }
+
+		.upload-label {
+			background-color: var(--accent2);
+			color: white;
+		}
+		.upload-label:hover { background-color: var(--accent2-hover); }
+
+        /* Collapsible Menu */
+        .menu-wrapper {
+            position: relative;
+        }
+
+        #dropdown-menu {
+            position: absolute;
+            top: calc(100% + 4px);
+            right: 0;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+            border-radius: 0;
+            width: 230px;
+            display: none;
+            z-index: 1001;
+        }
+
+        .menu-item {
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 14px;
+            border: none;
+            border-bottom: 1px solid #f1f1f1;
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 13px;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 0;
+            height: auto;
+            font-family: inherit;
+            justify-content: flex-start;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            background-color: #f8f9fa;
+            color: var(--accent);
+        }
+
+        .menu-item svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            flex-shrink: 0;
+        }
+
+        #file-prompt {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: var(--bg-color);
+            gap: 12px;
+            cursor: pointer;
+        }
+        
+        #file-prompt h3 {
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        main {
+            display: none;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #map-container {
+            flex: 1; 
+            padding: 20px;
+            position: relative;
+            background-color: #fff;
+            overflow: hidden;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+        }
+
+        /* Corner Map Controls */
+        #map-edit-controls {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        #map-nav-controls {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 20;
+        }
+
+        .square-zoom-btn {
+            box-sizing: border-box;
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            color: var(--text-main);
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: inherit;
+            transition: background-color 0.15s, border-color 0.15s;
+        }
+
+        .square-zoom-btn:hover {
+            background-color: #f1f1f1;
+            border-color: var(--text-main);
+        }
+
+        .square-zoom-btn.active-mode {
+            background: var(--accent2);
+            color: white;
+            border-color: var(--accent2);
+        }
+
+        .square-zoom-btn svg {
+            width: 15px;
+            height: 15px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .square-zoom-label {
+            box-sizing: border-box;
+            height: 28px;
+            padding: 0 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            background: #ffffff;
+            color: var(--text-muted);
+            border-radius: 0;
+            font-size: 11px;
+            font-family: monospace;
+            font-weight: bold;
+            user-select: none;
+            min-width: 44px;
+            text-align: center;
+        }
+
+        /* Unplaced Racks Tray */
+        #unplaced-tray {
+            position: absolute;
+            top: 50px;
+            left: 12px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            font-size: 12px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .unplaced-chip {
+            background: #eef2f7;
+            border: 1px solid var(--border-color);
+            padding: 3px 8px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 0;
+        }
+
+        .unplaced-chip:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .unplaced-chip.selected {
+            background: var(--accent2);
+            color: white;
+            border-color: var(--accent2);
+        }
+
+        #details-container {
+            flex: 0 0 570px;
+            width: 570px;
+            min-width: 570px;
+            max-width: 570px;
+            box-sizing: border-box;
+            background-color: var(--panel-bg);
+            padding: 20px 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        #global-list-view {
+            display: none;
+            width: 100%;
+            height: 100%;
+            background-color: var(--panel-bg);
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        svg#network-map {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .room {
+            fill: transparent;
+            stroke: #2c3e50;
+            stroke-width: 2;
+        }
+
+        .rack {
+            fill: #ecf0f1;
+            stroke: #2c3e50;
+            stroke-width: 2;
+            cursor: pointer;
+            transition: fill 0.2s;
+        }
+
+        .rack:hover {
+            fill: #bdc3c7;
+        }
+
+        .rack.active {
+            fill: #2ecc71;
+            stroke: #27ae60;
+        }
+
+        .rack-group.editable {
+            cursor: move;
+        }
+
+        .rack-group.editable:hover .rack {
+            stroke: var(--accent);
+            stroke-width: 3;
+        }
+
+        .rack-label {
+            font-size: 14px;
+            font-weight: bold;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .connection-line {
+            stroke: #e74c3c;
+            stroke-width: 2;
+            stroke-dasharray: 5, 5;
+            animation: dash 10s linear infinite;
+        }
+
+        @keyframes dash {
+            to { stroke-dashoffset: -100; }
+        }
+
+        .device-card {
+            border: 2px solid var(--text-main);
+            padding: 12px 14px;
+            border-radius: 0;
+            background-color: #fdfdfd;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .device-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .device-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .device-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .view-toggle {
+            display: inline-block;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 14px;
+            user-select: none;
+            padding: 4px;
+            border-radius: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .view-toggle:hover {
+            background-color: #eee;
+            color: var(--text-main);
+        }
+
+        .view-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .device-ip {
+            color: var(--accent);
+            text-decoration: none;
+            font-family: monospace;
+            font-size: 14px;
+            background: #e8f4f8;
+            padding: 4px 10px;
+            border-radius: 0;
+            font-weight: bold;
+        }
+        
+        .device-ip:hover { text-decoration: underline; }
+
+        .ports-container {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .port-row {
+            display: flex;
+            gap: 3px;
+            align-items: flex-end;
+            width: fit-content;
+        }
+
+        .port {
+            width: 26px;
+            height: 26px;
+            border: 2px solid var(--text-main);
+            cursor: pointer;
+            transition: transform 0.1s, border-color 0.1s;
+        }
+        
+        .port:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .port.active-port {
+            border: 3px solid #2b6cb0;
+            transform: scale(1.1);
+            z-index: 2;
+            box-shadow: 0 0 5px rgba(43, 108, 176, 0.5);
+        }
+
+        .port-label {
+            font-size: 10px;
+            text-align: center;
+            margin-bottom: 2px;
+            color: var(--text-muted);
+            font-weight: bold;
+            line-height: 12px;
+            min-height: 12px;
+        }
+
+        .port-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 28px;
+        }
+
+        .cat-empty { background-color: var(--port-empty); }
+        .cat-camera { background-color: var(--port-camera); }
+        .cat-pc { background-color: var(--port-pc); }
+        .cat-printer { background-color: var(--port-printer); }
+        .cat-server { background-color: var(--port-server); }
+        .cat-phone { background-color: var(--port-phone); }
+        .cat-machine { background-color: var(--port-machine); }
+        .cat-it { background-color: var(--port-it); }
+		.cat-tablet { background-color: var(--port-tablet); }
+        .cat-other { background-color: var(--port-other); }
+
+        .rack-comment {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 4px;
+        }
+
+        .device-comment {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: -6px;
+            margin-bottom: 10px;
+        }
+
+        .p-detail-comment {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        .port-details-box {
+            background: #f1f3f5;
+            border-radius: 0;
+            padding: 20px;
+            margin-top: 15px;
+            display: none;
+            border: 1px solid #dee2e6;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .p-detail-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #212529;
+            margin-bottom: 6px;
+        }
+        
+        .p-detail-sub {
+            color: #495057;
+            line-height: 1.6;
+        }
+
+        .port-list-container {
+            display: none;
+        }
+
+        .port-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            background: #fff;
+        }
+
+        .port-table th {
+            text-align: left;
+            padding: 6px 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--text-main);
+        }
+
+        .port-table td {
+            padding: 6px 10px;
+            border-bottom: 1px solid #edf2f7;
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        button.table-edit-btn {
+            width: 24px;
+            height: 24px;
+            background: transparent;
+            color: var(--text-main);
+            border-radius: 0;
+        }
+
+        button.table-edit-btn:hover {
+            background-color: #e2e8f0;
+        }
+
+        button.rack-img-btn:hover {
+            background-color: #e2e8f0;
+            border-color: var(--text-main);
+        }
+
+        button.table-edit-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .port-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .port-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .cat-dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 10px;
+            vertical-align: text-bottom;
+            border: 1px solid var(--text-main);
+        }
+
+        #legend-modal {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 100;
+            width: 250px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border: 1px solid var(--text-main);
+            border-radius: 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        .empty-state {
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 50px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+		<div class="header-left" style="display: flex; align-items: center;">
+			<div id="location-info" style="font-size: 14px; font-weight: bold; color: var(--text-main); letter-spacing: 0.5px; text-transform: uppercase;">
+				<span id="location-name"></span>
+			</div>
+		</div>
+		<div class="header-center">
+			<div class="search-wrapper">
+				<input type="text" id="search-input" placeholder="Search device, IP, port, comment...">
+				<div id="search-results"></div>
+			</div>
+		</div>
+		<div class="header-right">
+			<button id="download-btn" style="display: none; background-color: #27ae60; color: white;" onclick="downloadJSON()" title="Save & Download JSON database">
+				<svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+			</button>
+			<label class="upload-label" title="Load JSON database">
+				<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+				<input type="file" id="json-upload" accept=".json" style="display: none;">
+			</label>
+            <!-- Collapsible Menu for vector image & options -->
+            <div class="menu-wrapper">
+                <button id="menu-btn" onclick="toggleMenu()" title="Floor plan options">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+                </button>
+                <div id="dropdown-menu">
+                    <label class="menu-item" style="cursor: pointer;">
+                        <svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+                        <span>Load vector plan (.svg)</span>
+                        <input type="file" id="svg-upload" accept=".svg" style="display: none;" onchange="handleSVGUpload(event)">
+                    </label>
+                    <button class="menu-item" onclick="downloadSVG()">
+                        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <span>Download vector plan (.svg)</span>
+                    </button>
+                    <button class="menu-item" onclick="clearPlan()">
+                        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        <span>Remove floor plan from location</span>
+                    </button>
+                    <button class="menu-item" onclick="setImagesFolder()">
+                        <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                        <span>Rack elevations folder...</span>
+                    </button>
+                </div>
+            </div>
+			<button id="toggle-global-view-btn" title="All Devices List">
+				<svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+			</button>
+			<button id="legend-btn" title="Show Legend">
+				<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+			</button>
+		</div>
+	</header>
+    
+    <div id="legend-modal">
+        <h4 style="margin-bottom:10px; border-bottom:1px solid #ccc; padding-bottom:5px; text-transform:uppercase; font-size:12px;">Port Categories</h4>
+        <div class="legend-item"><div class="legend-color cat-empty"></div> Empty</div>
+        <div class="legend-item"><div class="legend-color cat-it"></div> IT Infrastructure</div>
+        <div class="legend-item"><div class="legend-color cat-camera"></div> Camera</div>
+        <div class="legend-item"><div class="legend-color cat-pc"></div> Workstation</div>
+        <div class="legend-item"><div class="legend-color cat-printer"></div> Printer</div>
+        <div class="legend-item"><div class="legend-color cat-machine"></div> Machine / Automation</div>
+        <div class="legend-item"><div class="legend-color cat-server"></div> Server / Storage</div>
+        <div class="legend-item"><div class="legend-color cat-phone"></div> VoIP Phone</div>
+		<div class="legend-item"><div class="legend-color cat-tablet"></div> Tablet / Panel</div>
+        <div class="legend-item"><div class="legend-color cat-other"></div> Other</div>
+    </div>
+
+    <div id="file-prompt">
+        <h2 style="letter-spacing: 1.5px; font-size: 26px; color: var(--text-main); margin-bottom: 4px;">pLAN</h2>
+        <h4 style="text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: normal; font-size: 13px;">Select network database file (.json)</h4>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Click here or drop a JSON file with facility configuration</p>
+    </div>
+
+    <main id="main-content">
+        <div id="map-container">
+            <!-- Left Corner: Edit Rack Positions Button (with Device Edit Pen Icon) -->
+            <div id="map-edit-controls">
+                <button class="square-zoom-btn" id="edit-racks-btn" onclick="toggleEditRacks()" title="Edit rack positions on map (drag & drop)">
+                    <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+            </div>
+
+            <!-- Right Corner: Navigation Zoom Controls (Horizontal with % scale and gaps) -->
+            <div id="map-nav-controls">
+                <button class="square-zoom-btn" onclick="zoomMap(0.85)" title="Zoom in">+</button>
+                <button class="square-zoom-btn" onclick="zoomMap(1.18)" title="Zoom out">-</button>
+                <button class="square-zoom-btn" onclick="resetZoom()" title="Reset view (100%)">⟲</button>
+                <div id="map-zoom-label" class="square-zoom-label" title="Map scale">100%</div>
+            </div>
+
+            <!-- Bottom-Left: Modification date info -->
+            <div id="db-info" style="display: none; position: absolute; bottom: 12px; left: 12px; z-index: 20; font-size: 11px; color: var(--text-muted); background: rgba(255, 255, 255, 0.9); padding: 3px 8px; border: 1px solid var(--border-color); user-select: none;">
+                Modified: <span id="db-date" style="font-weight: bold; color: var(--text-main); margin-left: 4px;">none</span>
+            </div>
+
+            <!-- Unplaced Racks Notification below edit button -->
+            <div id="unplaced-tray" style="display: none;">
+                <span style="font-weight: bold; color: #c0392b;">Unplaced racks:</span>
+                <span id="unplaced-chips" style="display: flex; gap: 5px;"></span>
+            </div>
+
+            <!-- SVG Element -->
+            <svg viewBox="0 0 850 650" id="network-map">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#e74c3c" />
+                    </marker>
+                </defs>
+                
+                <g id="map-background-layer"></g>
+                <g id="connections-layer"></g>
+                <g id="racks-layer"></g>
+            </svg>
+
+            <div id="no-map-notice" style="display: none; position: absolute; text-align: center; color: var(--text-muted); pointer-events: none;">
+                <p style="font-size: 14px; font-weight: bold; margin-bottom: 6px;">No vector floor plan</p>
+                <p style="font-size: 12px;">Load a .svg file from the top-right menu or drag and drop it here.</p>
+            </div>
+        </div>
+
+        <div id="details-container">
+            <div class="empty-state">Select a rack on the map to view details.</div>
+        </div>
+
+        <!-- Rack Elevation Image Modal -->
+        <div id="rack-image-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:2000; align-items:center; justify-content:center; padding:20px;" onclick="if(event.target===this) closeRackImageModal()">
+            <div style="background:#fff; border:1px solid var(--border-color); border-radius:0; width:92vw; height:90vh; max-width:1200px; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 8px 24px rgba(0,0,0,0.3); overflow:hidden;">
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 14px; border-bottom:1px solid var(--border-color); background:#f8f9fa;">
+                    <span id="rack-modal-title" style="font-weight:bold; font-size:14px; text-transform:uppercase;"></span>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <button class="square-zoom-btn" onclick="zoomRackImage(1.2)" title="Zoom in">+</button>
+                            <button class="square-zoom-btn" onclick="zoomRackImage(0.8)" title="Zoom out">-</button>
+                            <button class="square-zoom-btn" onclick="resetRackImageZoom()" title="Reset zoom (100%)">⟲</button>
+                            <div id="modal-zoom-label" class="square-zoom-label" title="Elevation scale">100%</div>
+                        </div>
+                        <button onclick="closeRackImageModal()" class="square-zoom-btn" style="font-size:18px; margin-left:4px;" title="Close">&times;</button>
+                    </div>
+                </div>
+                <div id="rack-modal-viewport" style="flex:1; overflow:hidden; position:relative; display:flex; justify-content:center; align-items:center; background:#eaedf0; cursor:grab;">
+                    <img id="rack-modal-img" src="" alt="Rack elevation" style="max-width:100%; max-height:100%; object-fit:contain; border:1px solid #bdc3c7; background:#fff; transform-origin:center center; user-select:none; pointer-events:none;">
+                    <div id="rack-modal-error" style="display:none; color:#7f8c8d; font-size:13px; text-align:center; padding:40px 20px;">
+                        File not found: <strong id="rack-modal-filename" style="color:var(--text-main);"></strong><br>
+                        <span style="font-size:11px; margin-top:6px; display:block;">Place the exported rack image in the application folder.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="global-list-view">
+            <h2 class="section-title">All Network Devices</h2>
+            <table class="port-table" id="global-device-table">
+                <thead>
+                    <tr>
+                        <th>Device Name</th>
+                        <th>Rack Location</th>
+                        <th>IP Address</th>
+                        <th>Used Ports</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        let networkData = [];
+        let currentSvgMarkup = '';
+        let rackCoordinates = {};
+        let rackImagesFolder = '';
+        let locationName = '';
+
+        // ViewBox / Pan / Zoom
+        let baseViewBox = { minX: 0, minY: 0, width: 850, height: 650 };
+        let currentViewBox = { ...baseViewBox };
+        let isPanning = false;
+        let panStart = { x: 0, y: 0 };
+
+        // Edit Racks Mode
+        let isEditRacksMode = false;
+        let rackPlacingTarget = null;
+        let activeSelectedRackLoc = null;
+
+        const detailsContainer = document.getElementById('details-container');
+        const mapContainer = document.getElementById('map-container');
+        const globalListView = document.getElementById('global-list-view');
+        const globalViewBtn = document.getElementById('toggle-global-view-btn');
+
+        // Collapsible menu handler
+        window.toggleMenu = function() {
+            const menu = document.getElementById('dropdown-menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        };
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.menu-wrapper')) {
+                const menu = document.getElementById('dropdown-menu');
+                if (menu) menu.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('json-upload').addEventListener('change', function(e) {
+			const file = e.target.files[0];
+			if(!file) return;
+			loadJSONFile(file);
+            e.target.value = '';
+		});
+
+        function loadJSONFile(file) {
+            const lastModified = new Date(file.lastModified).toLocaleDateString('en-US');
+			
+			const reader = new FileReader();
+			reader.onload = function(evt) {
+				try {
+					const parsed = JSON.parse(evt.target.result);
+					parseAndLoadData(parsed, lastModified, file.name);
+					saveCurrentToStorage();
+				} catch(err) {
+					alert("JSON parsing error. Please ensure the file is valid JSON.");
+					console.error(err);
+				}
+			};
+			reader.readAsText(file);
+        }
+
+        function sanitizeRackCoordinates(coords) {
+            if (!coords || typeof coords !== 'object') return {};
+            const clean = {};
+            for (const [loc, c] of Object.entries(coords)) {
+                if (!c || typeof c !== 'object') continue;
+                clean[loc] = {
+                    ...c,
+                    x: Math.round(Number(c.x) || 100),
+                    y: Math.round(Number(c.y) || 100)
+                };
+            }
+            return clean;
+        }
+
+        function parseAndLoadData(parsed, dateStr, fileName) {
+            if (Array.isArray(parsed)) {
+                networkData = parsed;
+                currentSvgMarkup = '';
+                rackCoordinates = {};
+                rackImagesFolder = '';
+                locationName = fileName ? fileName.replace(/\.[^.]+$/, '') : 'Location';
+            } else if (parsed && typeof parsed === 'object') {
+                networkData = parsed.devices || parsed.networkData || [];
+                currentSvgMarkup = parsed.map_svg || parsed.svg || '';
+                rackCoordinates = sanitizeRackCoordinates(parsed.rack_coordinates || parsed.rackPositions || {});
+                rackImagesFolder = parsed.images_folder || parsed.imagesFolder || '';
+                locationName = parsed.location_name || parsed.name || (fileName ? fileName.replace(/\.[^.]+$/, '') : 'Lokalizacja');
+            }
+
+            document.getElementById('file-prompt').style.display = 'none';
+            document.getElementById('main-content').style.display = 'flex';
+
+            const locInfo = document.getElementById('location-info');
+            const locNameSpan = document.getElementById('location-name');
+            if (locInfo && locNameSpan) {
+                locNameSpan.innerText = locationName;
+                locInfo.style.display = 'block';
+            }
+            
+            document.getElementById('db-info').style.display = 'block';
+            document.getElementById('db-date').innerText = dateStr || new Date().toLocaleDateString('en-US');
+            document.getElementById('db-date').style.color = "var(--text-main)";
+            document.getElementById('download-btn').style.display = 'inline-block';
+            
+            initApp();
+        }
+
+        function saveCurrentToStorage() {
+            try {
+                const payload = {
+                    location_name: locationName || '',
+                    images_folder: rackImagesFolder || '',
+                    map_svg: currentSvgMarkup,
+                    rack_coordinates: sanitizeRackCoordinates(rackCoordinates),
+                    devices: networkData
+                };
+                localStorage.setItem('plan_current_network_data', JSON.stringify(payload));
+            } catch (e) {}
+        }
+
+        // Drag and drop handler for SVG or JSON files
+        window.addEventListener('dragover', (e) => e.preventDefault());
+        window.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const files = Array.from(e.dataTransfer.files);
+            if (files.length === 0) return;
+
+            files.forEach(file => {
+                if (file.name.toLowerCase().endsWith('.json')) {
+                    loadJSONFile(file);
+                } else if (file.name.toLowerCase().endsWith('.svg')) {
+                    loadSVGFile(file);
+                }
+            });
+        });
+
+        document.getElementById('legend-btn').addEventListener('click', () => {
+            const modal = document.getElementById('legend-modal');
+            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        });
+
+        globalViewBtn.addEventListener('click', () => {
+			if (globalListView.style.display === 'none' || globalListView.style.display === '') {
+				mapContainer.style.display = 'none';
+				detailsContainer.style.display = 'none';
+				globalListView.style.display = 'block';
+				
+				globalViewBtn.title = 'Widok Mapy';
+				globalViewBtn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>';
+				
+				renderGlobalList();
+			} else {
+				globalListView.style.display = 'none';
+				mapContainer.style.display = 'flex';
+				detailsContainer.style.display = 'flex';
+				
+				globalViewBtn.title = 'Widok Listy';
+				globalViewBtn.innerHTML = '<svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>';
+			}
+		});
+
+        function initApp() {
+            renderMapBackground();
+            ensureRackPositions();
+            renderAllRacks();
+            setupMapInteractions();
+            setupSearch();
+            renderGlobalList();
+            checkUnplacedRacks();
+            
+            detailsContainer.innerHTML = '<div class="empty-state">Select a rack on the map to view details.</div>';
+            document.getElementById('connections-layer').innerHTML = '';
+            document.querySelectorAll('.rack').forEach(r => r.classList.remove('active'));
+            activeSelectedRackLoc = null;
+        }
+
+        function renderMapBackground() {
+            const bgLayer = document.getElementById('map-background-layer');
+            const noMapNotice = document.getElementById('no-map-notice');
+            const currentSvg = document.getElementById('network-map');
+            if (!bgLayer) return;
+
+            if (!currentSvgMarkup || !currentSvgMarkup.trim()) {
+                bgLayer.innerHTML = '';
+                if (noMapNotice) noMapNotice.style.display = 'block';
+                return;
+            }
+
+            if (noMapNotice) noMapNotice.style.display = 'none';
+
+            try {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(currentSvgMarkup, 'image/svg+xml');
+                const importedSvg = doc.querySelector('svg');
+
+                if (importedSvg) {
+                    let vb = importedSvg.getAttribute('viewBox');
+                    if (!vb) {
+                        const w = importedSvg.getAttribute('width') || 850;
+                        const h = importedSvg.getAttribute('height') || 650;
+                        vb = `0 0 ${w} ${h}`;
+                    }
+                    currentSvg.setAttribute('viewBox', vb);
+
+                    let innerMarkup = '';
+                    Array.from(importedSvg.children).forEach(child => {
+                        const id = child.id || '';
+                        if (id !== 'connections-layer' && id !== 'racks-layer' && child.tagName.toLowerCase() !== 'defs') {
+                            innerMarkup += child.outerHTML;
+                        }
+                    });
+                    bgLayer.innerHTML = innerMarkup || importedSvg.innerHTML;
+                } else {
+                    bgLayer.innerHTML = currentSvgMarkup;
+                }
+            } catch(e) {
+                bgLayer.innerHTML = currentSvgMarkup;
+            }
+
+            setupPanAndZoom();
+        }
+
+        /* Ensure all racks from networkData exist in rackCoordinates */
+        function ensureRackPositions() {
+            const locSet = new Set();
+            networkData.forEach(d => { if (d.location) locSet.add(d.location); });
+
+            let offsetX = 80;
+            let offsetY = 80;
+            locSet.forEach(loc => {
+                if (!rackCoordinates[loc]) {
+                    rackCoordinates[loc] = { x: offsetX, y: offsetY };
+                    offsetX = (offsetX + 150) % 700 + 70;
+                    offsetY = (offsetY + 80) % 500 + 70;
+                }
+            });
+        }
+
+        function getRackLabelProps(loc, coords) {
+            const side = (coords.label_side || 'top').toLowerCase();
+            const align = (coords.label_align || '').toLowerCase();
+            
+            let textX = 13;
+            let textY = -7;
+            let anchor = 'middle';
+
+            if (side === 'bottom') {
+                textY = 38;
+                if (align === 'start' || align === 'left') { textX = 0; anchor = 'start'; }
+                else if (align === 'end' || align === 'right') { textX = 26; anchor = 'end'; }
+                else { textX = 13; anchor = 'middle'; }
+            } else if (side === 'left') {
+                textX = -8;
+                textY = 18;
+                anchor = (align === 'start' || align === 'left') ? 'start' : 'end';
+            } else if (side === 'right') {
+                textX = 34;
+                textY = 18;
+                anchor = (align === 'end' || align === 'right') ? 'end' : 'start';
+            } else { // top (default)
+                textY = -7;
+                if (align === 'start' || align === 'left') { textX = 0; anchor = 'start'; }
+                else if (align === 'end' || align === 'right') { textX = 26; anchor = 'end'; }
+                else { textX = 13; anchor = 'middle'; }
+            }
+
+            if (coords.label_offset_x) textX += parseFloat(coords.label_offset_x);
+            if (coords.label_offset_y) textY += parseFloat(coords.label_offset_y);
+
+            return { x: textX, y: textY, anchor: anchor };
+        }
+
+        /* Render Rack Markers into #racks-layer */
+        function renderAllRacks() {
+            let racksLayer = document.getElementById('racks-layer');
+            if (!racksLayer) {
+                const svg = document.getElementById('network-map');
+                racksLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                racksLayer.id = 'racks-layer';
+                svg.appendChild(racksLayer);
+            }
+            racksLayer.innerHTML = '';
+
+            const locSet = new Set();
+            networkData.forEach(d => { if (d.location) locSet.add(d.location); });
+            Object.keys(rackCoordinates).forEach(l => locSet.add(l));
+
+            locSet.forEach(loc => {
+                const coords = rackCoordinates[loc];
+                if (!coords) return;
+
+                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                g.setAttribute('class', 'rack-group' + (isEditRacksMode ? ' editable' : ''));
+                g.setAttribute('data-loc', loc);
+                g.setAttribute('transform', `translate(${coords.x - 13}, ${coords.y - 13})`);
+
+                const isActive = (activeSelectedRackLoc === loc);
+                const lp = getRackLabelProps(loc, coords);
+                g.innerHTML = `
+                    <rect width="26" height="26" class="rack ${isActive ? 'active' : ''}" id="rack-${escapeHtml(loc)}"/>
+                    <text x="${lp.x}" y="${lp.y}" text-anchor="${lp.anchor}" class="rack-label">${escapeHtml(loc)}</text>
+                `;
+                racksLayer.appendChild(g);
+            });
+        }
+
+        function checkUnplacedRacks() {
+            const tray = document.getElementById('unplaced-tray');
+            const chipsBox = document.getElementById('unplaced-chips');
+            chipsBox.innerHTML = '';
+
+            const locSet = new Set();
+            networkData.forEach(d => { if (d.location) locSet.add(d.location); });
+
+            const unplaced = Array.from(locSet).filter(l => !rackCoordinates[l]);
+            if (unplaced.length === 0) {
+                tray.style.display = 'none';
+                return;
+            }
+
+            tray.style.display = 'flex';
+            unplaced.forEach(loc => {
+                const btn = document.createElement('button');
+                btn.className = 'unplaced-chip' + (rackPlacingTarget === loc ? ' selected' : '');
+                btn.innerText = `+ Place: ${loc}`;
+                btn.onclick = () => {
+                    rackPlacingTarget = loc;
+                    checkUnplacedRacks();
+                };
+                chipsBox.appendChild(btn);
+            });
+        }
+
+        /* Setup Map Clicking and Dragging */
+        function setupMapInteractions() {
+            const svg = document.getElementById('network-map');
+            if (!svg) return;
+
+            document.querySelectorAll('.rack-group').forEach(group => {
+                const loc = group.getAttribute('data-loc');
+                let isDragging = false;
+                let dragStart = { x: 0, y: 0 };
+                let initialTranslate = { x: 0, y: 0 };
+
+                group.onmousedown = (e) => {
+                    if (e.button !== 0) return;
+                    if (!isEditRacksMode) return;
+
+                    e.stopPropagation();
+                    isDragging = true;
+                    dragStart = { x: e.clientX, y: e.clientY };
+
+                    const tr = group.getAttribute('transform') || '';
+                    const match = tr.match(/translate\(\s*([\d\.-]+)[\s,]+([\d\.-]+)\s*\)/);
+                    initialTranslate = match ? { x: parseFloat(match[1]), y: parseFloat(match[2]) } : { x: 0, y: 0 };
+                };
+
+                window.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
+                    const pt = getSVGCoords(svg, e.clientX, e.clientY);
+                    const startPt = getSVGCoords(svg, dragStart.x, dragStart.y);
+                    const dx = pt.x - startPt.x;
+                    const dy = pt.y - startPt.y;
+
+                    const newX = Math.round(initialTranslate.x + dx);
+                    const newY = Math.round(initialTranslate.y + dy);
+
+                    group.setAttribute('transform', `translate(${newX}, ${newY})`);
+                    if (!rackCoordinates[loc]) rackCoordinates[loc] = {};
+                    rackCoordinates[loc].x = newX + 13;
+                    rackCoordinates[loc].y = newY + 13;
+
+                    if (activeSelectedRackLoc === loc) {
+                        drawConnections(loc);
+                    }
+                });
+
+                window.addEventListener('mouseup', () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        saveRackCoordinates();
+                    }
+                });
+
+                group.onclick = (e) => {
+                    if (!isEditRacksMode) {
+                        selectRack(loc);
+                    }
+                };
+            });
+
+            // Handle placing an unplaced rack by clicking on the map
+            svg.onclick = (e) => {
+                if (!rackPlacingTarget) return;
+                const coords = getSVGCoords(svg, e.clientX, e.clientY);
+                if (!rackCoordinates[rackPlacingTarget]) rackCoordinates[rackPlacingTarget] = {};
+                rackCoordinates[rackPlacingTarget].x = coords.x;
+                rackCoordinates[rackPlacingTarget].y = coords.y;
+                const placed = rackPlacingTarget;
+                rackPlacingTarget = null;
+
+                saveRackCoordinates();
+                renderAllRacks();
+                setupMapInteractions();
+                checkUnplacedRacks();
+                selectRack(placed);
+            };
+
+            // Setup Pan & Zoom on SVG
+            setupPanAndZoom();
+        }
+
+        function saveRackCoordinates() {
+            rackCoordinates = sanitizeRackCoordinates(rackCoordinates);
+            saveCurrentToStorage();
+            const dateDisplay = document.getElementById('db-date');
+            if (dateDisplay) {
+                dateDisplay.innerText = "Unsaved changes!";
+                dateDisplay.style.color = "#e74c3c";
+            }
+        }
+
+        /* Corner Map Controls: Edit Racks */
+        window.toggleEditRacks = function() {
+            isEditRacksMode = !isEditRacksMode;
+            const btn = document.getElementById('edit-racks-btn');
+            if (isEditRacksMode) {
+                btn.classList.add('active-mode');
+            } else {
+                btn.classList.remove('active-mode');
+                rackPlacingTarget = null;
+                checkUnplacedRacks();
+            }
+
+            document.querySelectorAll('.rack-group').forEach(g => {
+                if (isEditRacksMode) g.classList.add('editable');
+                else g.classList.remove('editable');
+            });
+        };
+
+        /* Pan & Zoom */
+        function setupPanAndZoom() {
+            const svg = document.getElementById('network-map');
+            const mapContainer = document.getElementById('map-container');
+            if (!svg || !mapContainer) return;
+
+            let vb = svg.getAttribute('viewBox');
+            if (!vb) {
+                vb = "0 0 850 650";
+                svg.setAttribute('viewBox', vb);
+            }
+            const parts = vb.split(/[\s,]+/).map(Number);
+            baseViewBox = { minX: parts[0] || 0, minY: parts[1] || 0, width: parts[2] || 850, height: parts[3] || 650 };
+            currentViewBox = { ...baseViewBox };
+            updateMapZoomLabel();
+
+            mapContainer.onwheel = (e) => {
+                e.preventDefault();
+                const factor = e.deltaY < 0 ? 0.88 : 1.14;
+                zoomMapAt(factor, e.clientX, e.clientY);
+            };
+
+            mapContainer.onmousedown = (e) => {
+                if (e.button !== 0) return;
+                if (e.target.closest('.rack-group') || e.target.closest('#map-controls') || e.target.closest('#unplaced-tray')) return;
+                isPanning = true;
+                panStart = { x: e.clientX, y: e.clientY };
+                mapContainer.style.cursor = 'grabbing';
+            };
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isPanning) return;
+                const dx = e.clientX - panStart.x;
+                const dy = e.clientY - panStart.y;
+                panStart = { x: e.clientX, y: e.clientY };
+
+                const rect = svg.getBoundingClientRect();
+                const scaleX = currentViewBox.width / rect.width;
+                const scaleY = currentViewBox.height / rect.height;
+
+                currentViewBox.minX -= dx * scaleX;
+                currentViewBox.minY -= dy * scaleY;
+                applyViewBox();
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isPanning) {
+                    isPanning = false;
+                    mapContainer.style.cursor = 'default';
+                }
+            });
+        }
+
+        window.zoomMap = function(factor) {
+            const svg = document.getElementById('network-map');
+            if (!svg) return;
+            const rect = svg.getBoundingClientRect();
+            zoomMapAt(factor, rect.left + rect.width / 2, rect.top + rect.height / 2);
+        };
+
+        function zoomMapAt(factor, clientX, clientY) {
+            const svg = document.getElementById('network-map');
+            if (!svg || !baseViewBox.width || !baseViewBox.height) return;
+            const rect = svg.getBoundingClientRect();
+            const relX = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+            const relY = Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
+
+            // Zoom range constrained to 50% - 300%
+            const minWidth = baseViewBox.width / 3.0; // 300% max zoom
+            const maxWidth = baseViewBox.width / 0.5; // 50% min zoom
+
+            let targetWidth = currentViewBox.width * factor;
+            let targetHeight = currentViewBox.height * factor;
+
+            if (targetWidth < minWidth) {
+                targetWidth = minWidth;
+                targetHeight = baseViewBox.height / 3.0;
+            } else if (targetWidth > maxWidth) {
+                targetWidth = maxWidth;
+                targetHeight = baseViewBox.height / 0.5;
+            }
+
+            if (Math.abs(targetWidth - currentViewBox.width) < 0.01) return;
+
+            currentViewBox.minX += (currentViewBox.width - targetWidth) * relX;
+            currentViewBox.minY += (currentViewBox.height - targetHeight) * relY;
+            currentViewBox.width = targetWidth;
+            currentViewBox.height = targetHeight;
+            applyViewBox();
+        }
+
+        function updateMapZoomLabel() {
+            const label = document.getElementById('map-zoom-label');
+            if (label && baseViewBox && baseViewBox.width && currentViewBox && currentViewBox.width) {
+                const pct = Math.round((baseViewBox.width / currentViewBox.width) * 100);
+                label.innerText = `${pct}%`;
+            }
+        }
+
+        window.resetZoom = function() {
+            currentViewBox = { ...baseViewBox };
+            applyViewBox();
+        };
+
+        function applyViewBox() {
+            const svg = document.getElementById('network-map');
+            if (!svg) return;
+            svg.setAttribute('viewBox', `${currentViewBox.minX} ${currentViewBox.minY} ${currentViewBox.width} ${currentViewBox.height}`);
+            updateMapZoomLabel();
+        }
+
+        function getSVGCoords(svg, clientX, clientY) {
+            const pt = svg.createSVGPoint();
+            pt.x = clientX;
+            pt.y = clientY;
+            const res = pt.matrixTransform(svg.getScreenCTM().inverse());
+            return { x: Math.round(res.x), y: Math.round(res.y) };
+        }
+
+        /* SVG Vector Image Upload & Download */
+        window.handleSVGUpload = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            loadSVGFile(file);
+            event.target.value = '';
+            toggleMenu();
+        };
+
+        function loadSVGFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const text = evt.target.result;
+                if (!text.includes('<svg')) {
+                    alert('File does not contain valid SVG markup.');
+                    return;
+                }
+
+                currentSvgMarkup = text;
+                renderMapBackground();
+                renderAllRacks();
+                setupMapInteractions();
+                if (activeSelectedRackLoc) drawConnections(activeSelectedRackLoc);
+
+                saveCurrentToStorage();
+
+                const dateDisplay = document.getElementById('db-date');
+                if (dateDisplay) {
+                    dateDisplay.innerText = "Unsaved changes (plan imported)!";
+                    dateDisplay.style.color = "#e74c3c";
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        window.downloadSVG = function() {
+            if (!currentSvgMarkup) {
+                alert('No vector floor plan to download.');
+                return;
+            }
+            const blob = new Blob([currentSvgMarkup], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'facility_plan.svg';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            toggleMenu();
+        };
+
+        window.clearPlan = function() {
+            if (!confirm('Are you sure you want to remove the vector floor plan from this location?')) return;
+            currentSvgMarkup = '';
+            renderMapBackground();
+            saveCurrentToStorage();
+            const dateDisplay = document.getElementById('db-date');
+            if (dateDisplay) {
+                dateDisplay.innerText = "Unsaved changes!";
+                dateDisplay.style.color = "#e74c3c";
+            }
+            toggleMenu();
+        };
+
+        /* Rack Selection and Details */
+        window.selectRack = function(locationId) {
+            activeSelectedRackLoc = locationId;
+            document.querySelectorAll('.rack').forEach(r => r.classList.remove('active'));
+            const activeRack = document.getElementById(`rack-${locationId}`);
+            if(activeRack) activeRack.classList.add('active');
+
+            const devicesInLoc = networkData.filter(d => d.location === locationId);
+            renderRackDetails(locationId, devicesInLoc);
+            drawConnections(locationId);
+            
+            detailsContainer.scrollTop = 0;
+        };
+
+        function stripDiacritics(str) {
+            const diacritics = {
+                'ą': 'a', 'ć': 'c', 'ę': 'e', 'ł': 'l', 'ń': 'n', 'ó': 'o', 'ś': 's', 'ź': 'z', 'ż': 'z',
+                'Ą': 'a', 'Ć': 'c', 'Ę': 'e', 'Ł': 'l', 'Ń': 'n', 'Ó': 'o', 'Ś': 's', 'Ź': 'z', 'Ż': 'z'
+            };
+            return String(str || '').replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/g, m => diacritics[m] || m);
+        }
+
+        function normalizeString(str) {
+            return stripDiacritics(str).toLowerCase().replace(/[\s\-_]+/g, ' ').trim();
+        }
+
+        /* Dynamic connection tracing finding which devices reference each other */
+        function drawConnections(sourceLoc) {
+            const layer = document.getElementById('connections-layer');
+            if (!layer) return;
+            layer.innerHTML = ''; 
+            
+            const sourceDevices = networkData.filter(d => d.location === sourceLoc);
+            let connectedLocs = new Set();
+
+            // All known locations in data & map
+            const allKnownLocs = new Set();
+            networkData.forEach(d => { if (d.location) allKnownLocs.add(d.location); });
+            Object.keys(rackCoordinates).forEach(l => allKnownLocs.add(l));
+
+            // Sort target locations descending by length so longer names match first (e.g. 'hala1a' before 'hala1')
+            const sortedLocs = Array.from(allKnownLocs)
+                .filter(l => l && l !== sourceLoc)
+                .sort((a, b) => b.length - a.length);
+
+            // Map unique device names from other locations
+            const deviceNameToLoc = new Map();
+            const deviceNameCounts = new Map();
+            networkData.forEach(d => {
+                if (d.name && d.location) {
+                    const normName = normalizeString(d.name);
+                    const currentLoc = d.location;
+                    if (deviceNameCounts.has(normName)) {
+                        if (deviceNameToLoc.get(normName) !== currentLoc) {
+                            deviceNameCounts.set(normName, 2); // ambiguous model name
+                        }
+                    } else {
+                        deviceNameCounts.set(normName, 1);
+                        deviceNameToLoc.set(normName, currentLoc);
+                    }
+                }
+            });
+
+            // IP to location map
+            const ipToLoc = new Map();
+            networkData.forEach(d => {
+                if (d.ip && d.location) {
+                    ipToLoc.set(d.ip.trim(), d.location);
+                }
+            });
+
+            sourceDevices.forEach(dev => {
+                (dev.ports || []).forEach(p => {
+                    const connRaw = p.connected ? String(p.connected).trim() : '';
+                    const connNorm = normalizeString(connRaw);
+                    const isUplink = (
+                        p.category === 'it' ||
+                        p.is_uplink === true ||
+                        Boolean(p.target_location) ||
+                        Boolean(p.uplink_to) ||
+                        connNorm.includes('uplink')
+                    );
+
+                    if (!isUplink && !p.target_location && !p.uplink_to) return;
+
+                    let targetLoc = null;
+
+                    // 1. Explicit parameter: target_location or uplink_to
+                    if (p.target_location && p.target_location !== sourceLoc) {
+                        targetLoc = p.target_location;
+                    } else if (p.uplink_to && p.uplink_to !== sourceLoc) {
+                        targetLoc = p.uplink_to;
+                    }
+
+                    // 2. Direct location name match in connected text
+                    if (!targetLoc && connNorm) {
+                        for (const loc of sortedLocs) {
+                            const locNorm = normalizeString(loc);
+                            const pattern = new RegExp('(^|[^a-z0-9])' + locNorm + '([^a-z0-9]|$)', 'i');
+                            if (pattern.test(connNorm) || connNorm.includes(locNorm)) {
+                                targetLoc = loc;
+                                break;
+                            }
+                        }
+                    }
+
+                    // 3. Unique device name reference in another location
+                    if (!targetLoc && connNorm) {
+                        for (const [normName, dLoc] of deviceNameToLoc.entries()) {
+                            if (dLoc !== sourceLoc && deviceNameCounts.get(normName) === 1 && connNorm.includes(normName)) {
+                                targetLoc = dLoc;
+                                break;
+                            }
+                        }
+                    }
+
+                    // 4. IP address match of another rack's switch
+                    if (!targetLoc && p.ip) {
+                        const matchedLoc = ipToLoc.get(p.ip.trim());
+                        if (matchedLoc && matchedLoc !== sourceLoc) {
+                            targetLoc = matchedLoc;
+                        }
+                    }
+
+                    if (targetLoc && targetLoc !== sourceLoc) {
+                        connectedLocs.add(targetLoc);
+                    }
+                });
+            });
+
+            const p1 = rackCoordinates[sourceLoc];
+            connectedLocs.forEach(targetLoc => {
+                const p2 = rackCoordinates[targetLoc];
+                if(p1 && p2) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', p1.x);
+                    line.setAttribute('y1', p1.y);
+                    line.setAttribute('x2', p2.x);
+                    line.setAttribute('y2', p2.y);
+                    line.setAttribute('class', 'connection-line');
+                    line.setAttribute('marker-end', 'url(#arrowhead)');
+                    layer.appendChild(line);
+                }
+            });
+        }
+
+        function renderRackDetails(locationId, devices) {
+            const coords = rackCoordinates[locationId] || {};
+            const side = (coords.label_side || 'top').toLowerCase();
+            const align = (coords.label_align || 'center').toLowerCase();
+            const rackComment = coords.comment || '';
+
+            detailsContainer.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;">
+                    <h2 class="section-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">${escapeHtml(locationId)}</h2>
+                    <div style="display: flex; gap: 6px; align-items: center; margin-top: 2px;">
+                        <button class="rack-img-btn" onclick="toggleRackLabelSettings('${escapeHtml(locationId)}')" title="Rack settings (label, notes)" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-main); height: 32px; width: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="4 7 4 4 20 4 20 7"></polyline>
+                                <line x1="9" y1="20" x2="15" y2="20"></line>
+                                <line x1="12" y1="4" x2="12" y2="20"></line>
+                            </svg>
+                        </button>
+                        <button class="rack-img-btn" onclick="openRackImage('${escapeHtml(locationId)}')" title="Show rack elevation" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-main); height: 32px; width: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="rack-label-settings-${escapeHtml(locationId)}" style="display: none; padding: 10px 14px; background: #f8f9fa; border: 1px solid var(--border-color); margin-bottom: 12px; font-size: 13px;">
+                    <div style="font-weight: bold; margin-bottom: 6px;">Rack label position on map:</div>
+                    <div style="display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 10px;">
+                        <label style="display: flex; align-items: center; gap: 6px;">
+                            Side:
+                            <select onchange="updateRackProp('${escapeHtml(locationId)}', 'label_side', this.value)" style="padding: 4px 6px; border: 1px solid var(--border-color); font-family: inherit;">
+                                <option value="top" ${side === 'top' ? 'selected' : ''}>Top (top)</option>
+                                <option value="bottom" ${side === 'bottom' ? 'selected' : ''}>Bottom (bottom)</option>
+                                <option value="left" ${side === 'left' ? 'selected' : ''}>Left (left)</option>
+                                <option value="right" ${side === 'right' ? 'selected' : ''}>Right (right)</option>
+                            </select>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px;">
+                            Align:
+                            <select onchange="updateRackProp('${escapeHtml(locationId)}', 'label_align', this.value)" style="padding: 4px 6px; border: 1px solid var(--border-color); font-family: inherit;">
+                                <option value="center" ${(align === 'center' || align === 'middle') ? 'selected' : ''}>Center (center)</option>
+                                <option value="start" ${align === 'start' ? 'selected' : ''}>Left (start)</option>
+                                <option value="end" ${align === 'end' ? 'selected' : ''}>Right (end)</option>
+                            </select>
+                        </label>
+                    </div>
+                    <label style="display: block; font-weight: bold; margin-bottom: 4px;">Rack note / comment:</label>
+                    <input type="text" id="rack-comment-input-${escapeHtml(locationId)}" value="${escapeHtml(rackComment)}" placeholder="Optional rack notes..." onchange="updateRackProp('${escapeHtml(locationId)}', 'comment', this.value)" style="width: 100%; padding: 4px 6px; border: 1px solid var(--border-color); font-family: inherit; box-sizing: border-box;">
+                </div>
+            `;
+            
+            if (devices.length === 0) {
+                detailsContainer.innerHTML += `<div class="empty-state">No devices in this rack.</div>`;
+                return;
+            }
+
+            devices.forEach((dev, devIndex) => {
+                const globalDevIndex = networkData.indexOf(dev);
+                const card = document.createElement('div');
+                card.className = 'device-card';
+                card.id = `device-${devIndex}`;
+                
+                const ipLink = dev.ip ? `<a href="http://${dev.ip}" target="_blank" class="device-ip">${dev.ip}</a>` : '';
+                const editNoteIcon = `<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
+
+                card.innerHTML = `
+                    <div class="device-header">
+                        <div class="device-title-wrapper">
+                            <span class="device-title">${escapeHtml(dev.name)}</span>
+                            <span class="view-toggle" onclick="toggleDeviceView(${devIndex}, this)" title="Toggle view (graphical / list)">&#9660;</span>
+                        </div>
+                        ${ipLink}
+                    </div>
+                    
+                    <div id="graphic-view-${devIndex}">
+                        ${generatePortsHTML(dev, devIndex)}
+                        <div id="port-details-${devIndex}" class="port-details-box"></div>
+                    </div>
+                    
+                    <div id="list-view-${devIndex}" class="port-list-container">
+                        <div class="device-comment-bar" id="device-comment-bar-${devIndex}" style="background: #f8f9fa; border: 1px solid var(--border-color); padding: 6px 10px; margin-bottom: 12px; font-size: 13px;">
+                            <div id="device-comment-view-${devIndex}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
+                                    <span style="font-weight: bold; color: var(--text-main); font-size: 11px; text-transform: uppercase; flex-shrink: 0;">Note:</span>
+                                    <span id="device-comment-text-${devIndex}" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        ${dev.comment ? escapeHtml(dev.comment) : '<span style="font-style: italic; color: var(--text-muted);">No notes</span>'}
+                                    </span>
+                                </div>
+                                <button onclick="startEditDeviceComment(${devIndex})" class="table-edit-btn" title="Edit device note" style="flex-shrink: 0; background: transparent; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                                    ${editNoteIcon}
+                                </button>
+                            </div>
+                            <div id="device-comment-edit-${devIndex}" style="display: none; align-items: center; gap: 6px;">
+                                <span style="font-weight: bold; color: var(--text-main); font-size: 11px; text-transform: uppercase; flex-shrink: 0;">Note:</span>
+                                <input type="text" id="device-comment-input-${devIndex}" maxlength="150" value="${escapeHtml(dev.comment || '')}" placeholder="Optional note for this device..." style="flex: 1; padding: 4px 8px; border: 1px solid var(--accent); outline: none; font-family: inherit; font-size: 13px; box-sizing: border-box;" onkeydown="if(event.key==='Enter') saveDeviceComment(${globalDevIndex}, ${devIndex}); if(event.key==='Escape') cancelEditDeviceComment(${devIndex});">
+                                <button onclick="saveDeviceComment(${globalDevIndex}, ${devIndex})" title="Save note" style="background: var(--accent2); color: white; border: none; padding: 4px 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 26px;">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </button>
+                                <button onclick="cancelEditDeviceComment(${devIndex})" title="Cancel" style="background: transparent; color: #e74c3c; border: 1px solid #e74c3c; padding: 4px 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 26px;">
+                                    <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                            </div>
+                        </div>
+                        ${generatePortTableHTML(dev, devIndex)}
+                    </div>
+                `;
+                detailsContainer.appendChild(card);
+            });
+        }
+
+        window.toggleRackLabelSettings = function(locationId) {
+            const box = document.getElementById(`rack-label-settings-${locationId}`);
+            if (box) {
+                box.style.display = box.style.display === 'none' ? 'block' : 'none';
+            }
+        };
+
+        window.updateRackProp = function(locationId, prop, value) {
+            if (!rackCoordinates[locationId]) rackCoordinates[locationId] = {};
+            if (value !== undefined && value !== null && String(value).trim() !== '') {
+                rackCoordinates[locationId][prop] = String(value).trim();
+            } else {
+                delete rackCoordinates[locationId][prop];
+            }
+            saveCurrentToStorage();
+            renderAllRacks();
+            setupMapInteractions();
+            selectRack(locationId);
+            const dateDisplay = document.getElementById('db-date');
+            if (dateDisplay) {
+                dateDisplay.innerText = "Unsaved changes!";
+                dateDisplay.style.color = "#e74c3c";
+            }
+        };
+
+        window.updateRackLabelProp = function(locationId, prop, value) {
+            window.updateRackProp(locationId, prop, value);
+        };
+
+        window.startEditDeviceComment = function(devIndex) {
+            const vBox = document.getElementById(`device-comment-view-${devIndex}`);
+            const eBox = document.getElementById(`device-comment-edit-${devIndex}`);
+            const input = document.getElementById(`device-comment-input-${devIndex}`);
+            if (vBox && eBox) {
+                vBox.style.display = 'none';
+                eBox.style.display = 'flex';
+                if (input) {
+                    input.focus();
+                    input.select();
+                }
+            }
+        };
+
+        window.cancelEditDeviceComment = function(devIndex) {
+            const vBox = document.getElementById(`device-comment-view-${devIndex}`);
+            const eBox = document.getElementById(`device-comment-edit-${devIndex}`);
+            const input = document.getElementById(`device-comment-input-${devIndex}`);
+            if (vBox && eBox) {
+                eBox.style.display = 'none';
+                vBox.style.display = 'flex';
+                const textEl = document.getElementById(`device-comment-text-${devIndex}`);
+                const currentText = textEl ? (textEl.textContent.trim() === 'No notes' ? '' : textEl.textContent.trim()) : '';
+                if (input) input.value = currentText;
+            }
+        };
+
+        window.saveDeviceComment = function(globalDevIndex, devIndex) {
+            const dev = networkData[globalDevIndex];
+            const input = document.getElementById(`device-comment-input-${devIndex}`);
+            const vBox = document.getElementById(`device-comment-view-${devIndex}`);
+            const eBox = document.getElementById(`device-comment-edit-${devIndex}`);
+            const textEl = document.getElementById(`device-comment-text-${devIndex}`);
+            if (!dev || !input) return;
+
+            const val = input.value.trim();
+            if (val !== '') {
+                dev.comment = val;
+            } else {
+                delete dev.comment;
+            }
+
+            saveCurrentToStorage();
+            const dateDisplay = document.getElementById('db-date');
+            if (dateDisplay) {
+                dateDisplay.innerText = "Unsaved changes!";
+                dateDisplay.style.color = "#e74c3c";
+            }
+
+            if (textEl) {
+                textEl.innerHTML = dev.comment 
+                    ? escapeHtml(dev.comment) 
+                    : '<span style="font-style: italic; color: var(--text-muted);">No notes</span>';
+            }
+
+            if (vBox && eBox) {
+                eBox.style.display = 'none';
+                vBox.style.display = 'flex';
+            }
+        };
+
+        window.toggleDeviceView = function(deviceIndex, toggleEl) {
+            const gView = document.getElementById(`graphic-view-${deviceIndex}`);
+            const lView = document.getElementById(`list-view-${deviceIndex}`);
+            
+            if (gView.style.display !== 'none') {
+                gView.style.display = 'none';
+                lView.style.display = 'block';
+                toggleEl.classList.add('open');
+            } else {
+                gView.style.display = 'block';
+                lView.style.display = 'none';
+                toggleEl.classList.remove('open');
+            }
+        };
+
+        function generatePortsHTML(device, deviceIndex) {
+            const rawPorts = device.ports || [];
+            if (rawPorts.length === 0) {
+                return '<div class="empty-state" style="margin: 10px 0;">No ports configured</div>';
+            }
+
+            const mappedPorts = rawPorts.map((p, idx) => ({ ...p, originalIndex: idx }));
+
+            // Fallback for legacy JSON without row definitions
+            const hasExplicitRows = mappedPorts.some(p => p.row !== undefined);
+            if (!hasExplicitRows) {
+                if (mappedPorts.length <= 16) {
+                    mappedPorts.forEach(p => { p.row = 1; });
+                } else {
+                    mappedPorts.forEach((p, i) => {
+                        p.row = (i % 2 === 0) ? 1 : 2;
+                    });
+                }
+            }
+
+            // Group ports by row (preserves port order within each row)
+            const rowsMap = new Map();
+            mappedPorts.forEach(p => {
+                const rowNum = p.row || 1;
+                if (!rowsMap.has(rowNum)) rowsMap.set(rowNum, []);
+                rowsMap.get(rowNum).push(p);
+            });
+
+            const sortedRowKeys = Array.from(rowsMap.keys()).sort((a, b) => a - b);
+
+            let html = '<div class="ports-container">';
+            sortedRowKeys.forEach(rowKey => {
+                html += '<div class="port-row">';
+                const rowPorts = rowsMap.get(rowKey);
+                rowPorts.forEach(p => {
+                    if (p.space) {
+                        const spaceWidth = typeof p.space === 'number' ? p.space : 15;
+                        html += `<div style="width: ${spaceWidth}px; flex-shrink: 0;"></div>`;
+                    }
+                    html += createPortElement(p, deviceIndex, p.label);
+                });
+                html += '</div>';
+            });
+            html += '</div>';
+            return html;
+        }
+
+        function createPortElement(port, deviceIndex, displayLabel) {
+            const catClass = `cat-${port.category || 'empty'}`;
+            
+            let label = '';
+            if (displayLabel !== undefined && displayLabel !== null) {
+                label = String(displayLabel);
+            } else if (port.label !== undefined && port.label !== null) {
+                label = String(port.label);
+            } else {
+                label = port.port ? port.port.replace(/^(E|LAN|CH|SFP)/i, '') : '';
+            }
+            if (label === '') label = '&nbsp;';
+
+            let titleText = port.connected ? `${port.port} - ${port.connected}` : `${port.port} - Not connected`;
+            if (displayLabel !== undefined && displayLabel !== '&nbsp;' && displayLabel !== '' && displayLabel !== port.port) {
+                titleText = port.connected ? `${port.port} (Port ${displayLabel}) - ${port.connected}` : `${port.port} (Port ${displayLabel}) - Not connected`;
+            }
+
+
+            return `
+                <div class="port-wrapper">
+                    <div class="port-label">${label}</div>
+                    <div class="port ${catClass}" id="port-${deviceIndex}-${port.originalIndex}" 
+                         onclick="showPortDetails('${deviceIndex}', '${port.originalIndex}')"
+                         title="${escapeHtml(titleText)}">
+                    </div>
+                </div>
+            `;
+        }
+
+function generatePortTableHTML(device, deviceIndex) {
+			let html = '<table class="port-table"><thead><tr><th width="12%">Port</th><th width="24%">Category</th><th>Connected Device</th><th width="18%">IP Address</th><th width="5%"></th></tr></thead><tbody>';
+			
+			const editIcon = `<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
+
+			(device.ports || []).forEach((p, idx) => {
+				let catName = {
+					'empty': '-', 'it': 'IT Infrastructure', 'camera': 'Camera', 'pc': 'Workstation',
+					'printer': 'Printer', 'machine': 'Machine / Automation', 'server': 'Server / Storage',
+					'phone': 'VoIP Phone', 'other': 'Other', 'tablet': 'Tablet / Panel'
+				}[p.category] || p.category;
+				
+				let dotHtml = p.category !== 'empty' 
+					? `<span class="cat-dot cat-${p.category}"></span>` 
+					: `<span class="cat-dot" style="background:#fff;"></span>`;
+
+				html += `<tr>
+					<td><strong>${escapeHtml(p.port)}</strong></td>
+					<td>${dotHtml}${catName}</td>
+					<td>${escapeHtml(p.connected) || '<span style="color:#a0aec0">-</span>'}</td>
+					<td>${escapeHtml(p.ip) || '<span style="color:#a0aec0">-</span>'}</td> 
+					<td><button class="table-edit-btn" onclick="jumpToEdit('${deviceIndex}', '${idx}')" title="Edit port">${editIcon}</button></td>
+				</tr>`;
+			});
+			html += '</tbody></table>';
+			return html;
+		}
+
+        function renderGlobalList() {
+            const tbody = document.querySelector('#global-device-table tbody');
+            tbody.innerHTML = '';
+            
+            networkData.forEach(dev => {
+                const usedPorts = (dev.ports || []).filter(p => p.category !== 'empty').length;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${escapeHtml(dev.name)}</strong></td>
+                    <td><span style="text-transform: uppercase;">${escapeHtml(dev.location)}</span></td>
+                    <td>${dev.ip ? `<a href="http://${dev.ip}" target="_blank" style="color: var(--accent); text-decoration: none; font-family: monospace;">${dev.ip}</a>` : '<span style="color:#a0aec0">-</span>'}</td>
+                    <td>${usedPorts} / ${(dev.ports || []).length}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* Search strictly inside current location */
+        function setupSearch() {
+            const searchInput = document.getElementById('search-input');
+            const resultsBox = document.getElementById('search-results');
+
+            const catMap = {
+                'empty': 'empty',
+                'it': 'it infrastructure',
+                'camera': 'camera',
+                'pc': 'workstation',
+                'printer': 'printer',
+                'machine': 'machine / automation',
+                'server': 'server / storage',
+                'phone': 'voip phone',
+                'other': 'other',
+                'tablet': 'tablet / panel'
+            };
+
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase().trim();
+                resultsBox.innerHTML = '';
+                
+                if (term.length < 2) {
+                    resultsBox.style.display = 'none';
+                    return;
+                }
+                
+                let matches = [];
+                networkData.forEach((dev) => {
+                    const devName = dev.name ? dev.name.toLowerCase() : '';
+                    const devIp = dev.ip ? dev.ip.toLowerCase() : '';
+                    const devComm = dev.comment ? dev.comment.toLowerCase() : '';
+                    const rackCoords = rackCoordinates[dev.location] || {};
+                    const rackComm = rackCoords.comment ? rackCoords.comment.toLowerCase() : '';
+
+                    (dev.ports || []).forEach((p, pIdx) => {
+                        const connected = p.connected ? p.connected.toLowerCase() : '';
+                        const portName = p.port ? p.port.toLowerCase() : '';
+                        const portComm = p.comment ? p.comment.toLowerCase() : '';
+                        const catName = catMap[p.category] || p.category;
+
+                        if (
+                            connected.includes(term) || 
+                            devName.includes(term) || 
+                            devIp.includes(term) || 
+                            portName.includes(term) ||
+                            portComm.includes(term) ||
+                            devComm.includes(term) ||
+                            rackComm.includes(term) ||
+                            (catName && catName.includes(term))
+                        ) {
+                            let matchDesc = p.connected || 'Not connected';
+                            if (p.comment) {
+                                matchDesc += ` [Note: ${p.comment}]`;
+                            }
+                            matches.push({
+                                loc: dev.location,
+                                devName: dev.name,
+                                portIdx: pIdx,
+                                text: matchDesc,
+                                portName: p.port,
+                                catName: catName
+                            });
+                        }
+                    });
+                });
+                
+                if (matches.length > 0) {
+                    matches.forEach(m => {
+                        const div = document.createElement('div');
+                        div.className = 'search-item';
+                        div.innerHTML = `<strong>${escapeHtml(m.text)}</strong><span>${escapeHtml(m.devName)} (Rack: ${escapeHtml(m.loc)}), Port: ${escapeHtml(m.portName)} [Category: ${escapeHtml(m.catName)}]</span>`;
+                        
+                        div.onclick = () => {
+                            searchInput.value = '';
+                            resultsBox.style.display = 'none';
+                            
+                            if (globalListView.style.display === 'block') {
+                                globalViewBtn.click();
+                            }
+                            
+                            selectRack(m.loc);
+                            
+                            const devicesInLoc = networkData.filter(d => d.location === m.loc);
+                            const localDevIdx = devicesInLoc.findIndex(d => d.name === m.devName);
+                            
+                            if (localDevIdx !== -1) {
+                                const gView = document.getElementById(`graphic-view-${localDevIdx}`);
+                                const lView = document.getElementById(`list-view-${localDevIdx}`);
+                                if(gView && gView.style.display === 'none') {
+                                    gView.style.display = 'block';
+                                    lView.style.display = 'none';
+                                    document.querySelector(`#device-${localDevIdx} .view-toggle`).classList.remove('open');
+                                }
+                                
+                                const devCard = document.getElementById(`device-${localDevIdx}`);
+                                if (devCard) devCard.scrollIntoView({behavior: "smooth", block: "center"});
+                                
+                                const clickedElement = document.getElementById(`port-${localDevIdx}-${m.portIdx}`);
+                                if (clickedElement && !clickedElement.classList.contains('active-port')) {
+                                    showPortDetails(localDevIdx, m.portIdx);
+                                }
+                            }
+                        };
+                        resultsBox.appendChild(div);
+                    });
+                    resultsBox.style.display = 'block';
+                } else {
+                    resultsBox.style.display = 'none';
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.search-wrapper')) {
+                    resultsBox.style.display = 'none';
+                }
+            });
+        }
+		
+window.showPortDetails = function(deviceIndex, portIndex, forceOpen = false) {
+			const activeLoc = document.querySelector('.rack.active');
+			if(!activeLoc) return;
+			
+			const container = document.getElementById(`device-${deviceIndex}`);
+            if (!container) return;
+			const clickedElement = container.querySelector(`#port-${deviceIndex}-${portIndex}`);
+			const detailBox = document.getElementById(`port-details-${deviceIndex}`);
+			
+			if (clickedElement && clickedElement.classList.contains('active-port') && !forceOpen) {
+				clickedElement.classList.remove('active-port');
+				detailBox.style.display = 'none';
+				return;
+			}
+
+			container.querySelectorAll('.port').forEach(p => p.classList.remove('active-port'));
+			if (clickedElement) clickedElement.classList.add('active-port');
+			
+			const locId = activeLoc.id.replace('rack-', '');
+			const devicesInLoc = networkData.filter(d => d.location === locId);
+			const device = devicesInLoc[deviceIndex];
+			const port = device.ports[portIndex];
+			
+			let titleText = port.connected ? `${port.port}: ${port.connected}` : `${port.port}: -`;
+			let targetIP = port.ip ? `${port.ip}` : `-`;
+			
+			if (port.connected) {
+				let foundDev = networkData.find(d => port.connected.toLowerCase().includes(d.name.toLowerCase()));
+				if (foundDev) { targetIP = foundDev.ip || "-"; }
+			}
+
+			const commentInfo = port.comment ? `<div class="p-detail-comment"><span style="font-weight: bold; color: var(--text-main);">Note:</span> ${escapeHtml(port.comment)}</div>` : '';
+
+			const editIcon = `<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
+
+			detailBox.innerHTML = `
+				<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+					<div>
+						<div class="p-detail-title">${escapeHtml(titleText)}</div>
+						<div class="p-detail-sub">IP: ${escapeHtml(targetIP)}</div>
+						${commentInfo}
+					</div>
+					<button onclick="editPort(${deviceIndex}, ${portIndex})" title="Edit this port" style="background: transparent; border: none; color: var(--text-main); height: 30px; width: 30px; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+						${editIcon}
+					</button>
+				</div>
+			`;
+			detailBox.style.display = 'block';
+		};
+
+		window.editPort = function(deviceIndex, portIndex) {
+			const activeLoc = document.querySelector('.rack.active');
+			if(!activeLoc) return;
+			
+			const detailBox = document.getElementById(`port-details-${deviceIndex}`);
+			const locId = activeLoc.id.replace('rack-', '');
+			const devicesInLoc = networkData.filter(d => d.location === locId);
+			const device = devicesInLoc[deviceIndex];
+			const port = device.ports[portIndex];
+			
+			const categories = ['empty', 'it', 'camera', 'pc', 'printer', 'machine', 'server', 'phone', 'tablet', 'other'];
+			let catOptions = categories.map(cat => 
+				`<option value="${cat}" ${port.category === cat ? 'selected' : ''}>${cat}</option>`
+			).join('');
+
+			detailBox.innerHTML = `
+				<div style="display: flex; flex-direction: column; gap: 10px;">
+					<div class="p-detail-title">Edit: ${escapeHtml(port.port)}</div>
+					
+					<label style="font-size: 13px;">
+						<strong>Connected Device:</strong><br>
+						<input type="text" id="edit-conn-${deviceIndex}-${portIndex}" value="${escapeHtml(port.connected || '')}" style="width: 100%; margin-top: 5px; box-sizing: border-box; padding: 4px 6px;">
+					</label>
+					
+					<label style="font-size: 13px;">
+						<strong>Destination IP Address:</strong><br>
+						<input type="text" id="edit-ip-${deviceIndex}-${portIndex}" value="${escapeHtml(port.ip || '')}" style="width: 100%; margin-top: 5px; box-sizing: border-box; padding: 4px 6px;">
+					</label>
+					
+					<label style="font-size: 13px;">
+						<strong>Category:</strong><br>
+						<select id="edit-cat-${deviceIndex}-${portIndex}" style="width: 100%; margin-top: 5px; padding: 5px; box-sizing: border-box;">
+							${catOptions}
+						</select>
+					</label>
+
+					<label style="font-size: 13px;">
+						<strong>Note / Comment:</strong><br>
+						<textarea id="edit-comment-${deviceIndex}-${portIndex}" rows="2" maxlength="150" placeholder="Optional port note (max 150 chars)..." style="width: 100%; margin-top: 5px; box-sizing: border-box; padding: 4px 6px; font-family: inherit; resize: none;">${escapeHtml(port.comment || '')}</textarea>
+					</label>
+					
+					<div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+						<button onclick="showPortDetails(${deviceIndex}, ${portIndex}, true)" title="Cancel" style="background: transparent; color: #e74c3c; border: 1px solid #e74c3c; padding: 6px 10px; cursor: pointer;">
+							<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+						</button>
+						<button onclick="savePort('${locId}', ${deviceIndex}, ${portIndex})" title="Save" style="background: var(--accent2); color: white; border: none; padding: 6px 12px; cursor: pointer;">
+							<svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
+						</button>
+					</div>
+				</div>
+			`;
+		};
+
+		window.jumpToEdit = function(deviceIndex, portIndex) {
+			const gView = document.getElementById(`graphic-view-${deviceIndex}`);
+			const lView = document.getElementById(`list-view-${deviceIndex}`);
+			const toggleEl = document.querySelector(`#device-${deviceIndex} .view-toggle`);
+			
+			if (gView && gView.style.display === 'none') {
+				gView.style.display = 'block';
+				lView.style.display = 'none';
+				if (toggleEl) toggleEl.classList.remove('open');
+			}
+			
+			showPortDetails(deviceIndex, portIndex, true); 
+			
+			setTimeout(() => {
+				editPort(deviceIndex, portIndex);
+				const box = document.getElementById(`port-details-${deviceIndex}`);
+                if (box) box.scrollIntoView({behavior: "smooth", block: "nearest"});
+			}, 50);
+		};
+
+		window.savePort = function(locId, deviceIndex, portIndex) {
+			const devicesInLoc = networkData.filter(d => d.location === locId);
+			const device = devicesInLoc[deviceIndex];
+			const port = device.ports[portIndex];
+			
+			const newConn = document.getElementById(`edit-conn-${deviceIndex}-${portIndex}`).value.trim();
+			const newIp = document.getElementById(`edit-ip-${deviceIndex}-${portIndex}`).value.trim();
+			const newComment = document.getElementById(`edit-comment-${deviceIndex}-${portIndex}`).value.trim();
+			const newCat = document.getElementById(`edit-cat-${deviceIndex}-${portIndex}`).value;
+
+			port.connected = newConn !== '' ? newConn : null;
+			port.ip = newIp !== '' ? newIp : null;
+			port.category = newCat;
+			if (newComment !== '') {
+				port.comment = newComment;
+			} else {
+				delete port.comment;
+			}
+			
+			const dateDisplay = document.getElementById('db-date');
+			if (dateDisplay) {
+				dateDisplay.innerText = "Unsaved changes!";
+				dateDisplay.style.color = "#e74c3c";
+			}
+			
+			saveCurrentToStorage();
+			selectRack(locId);
+			showPortDetails(deviceIndex, portIndex, true);
+		};
+
+		window.downloadJSON = function() {
+			if (networkData.length === 0) return;
+			
+			rackCoordinates = sanitizeRackCoordinates(rackCoordinates);
+			const exportPayload = {
+				location_name: locationName || '',
+				images_folder: rackImagesFolder || '',
+				map_svg: currentSvgMarkup || '',
+				rack_coordinates: rackCoordinates,
+				devices: networkData
+			};
+			
+			const dataStr = JSON.stringify(exportPayload, null, 4);
+			const blob = new Blob([dataStr], { type: "application/json" });
+			const url = URL.createObjectURL(blob);
+			
+			const a = document.createElement('a');
+			a.href = url;
+			const filename = locationName ? `${locationName.toLowerCase().replace(/[\s\W]+/g, '_')}.json` : "network_data.json";
+			a.download = filename;
+			document.body.appendChild(a);
+			a.click();
+			
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+
+			saveCurrentToStorage();
+			
+			const dateDisplay = document.getElementById('db-date');
+			if (dateDisplay) {
+				dateDisplay.innerText = new Date().toLocaleDateString('en-US') + " (saved)";
+				dateDisplay.style.color = "var(--text-main)";
+			}
+		};
+
+        window.setImagesFolder = function() {
+            const current = rackImagesFolder || '';
+            const input = prompt("Enter rack elevations folder path (e.g. 'racks/' or 'images/'):\n(Leave empty to look in the application root folder)", current);
+            if (input !== null) {
+                let folder = input.trim();
+                if (folder && !folder.endsWith('/')) folder += '/';
+                rackImagesFolder = folder;
+                saveCurrentToStorage();
+                const dateDisplay = document.getElementById('db-date');
+                if (dateDisplay) {
+                    dateDisplay.innerText = "Unsaved changes!";
+                    dateDisplay.style.color = "#e74c3c";
+                }
+            }
+            toggleMenu();
+        };
+
+        let rackImgZoom = 1.0;
+        let rackImgPan = { x: 0, y: 0 };
+        let isRackImgPanning = false;
+        let rackImgPanStart = { x: 0, y: 0 };
+
+        window.openRackImage = function(locationId) {
+            const modal = document.getElementById('rack-image-modal');
+            const img = document.getElementById('rack-modal-img');
+            const title = document.getElementById('rack-modal-title');
+            const errorBox = document.getElementById('rack-modal-error');
+            const filenameSpan = document.getElementById('rack-modal-filename');
+
+            const baseName = `${locationId}.png`;
+            title.innerText = `Rack: ${locationId}`;
+
+            resetRackImageZoom();
+
+            let folder = rackImagesFolder ? (rackImagesFolder.endsWith('/') ? rackImagesFolder : rackImagesFolder + '/') : '';
+            let primarySrc = folder + baseName;
+            filenameSpan.innerText = primarySrc;
+
+            let triedFallback = false;
+
+            img.onload = function() {
+                img.style.display = 'block';
+                errorBox.style.display = 'none';
+            };
+            img.onerror = function() {
+                if (!triedFallback && folder !== '') {
+                    triedFallback = true;
+                    img.src = encodeURI(baseName);
+                    return;
+                }
+                img.style.display = 'none';
+                errorBox.style.display = 'block';
+            };
+
+            img.src = encodeURI(primarySrc);
+            modal.style.display = 'flex';
+        };
+
+        window.closeRackImageModal = function() {
+            const modal = document.getElementById('rack-image-modal');
+            if (modal) modal.style.display = 'none';
+        };
+
+        function zoomRackImage(factor) {
+            rackImgZoom = Math.max(0.4, Math.min(8.0, rackImgZoom * factor));
+            updateRackImgTransform();
+        }
+        window.zoomRackImage = zoomRackImage;
+
+        function resetRackImageZoom() {
+            rackImgZoom = 1.0;
+            rackImgPan = { x: 0, y: 0 };
+            updateRackImgTransform();
+        }
+        window.resetRackImageZoom = resetRackImageZoom;
+
+        function updateRackImgTransform() {
+            const img = document.getElementById('rack-modal-img');
+            const label = document.getElementById('modal-zoom-label');
+            if (img) {
+                img.style.transform = `translate(${rackImgPan.x}px, ${rackImgPan.y}px) scale(${rackImgZoom})`;
+            }
+            if (label) {
+                label.innerText = `${Math.round(rackImgZoom * 100)}%`;
+            }
+        }
+
+        function initRackModalEvents() {
+            const vp = document.getElementById('rack-modal-viewport');
+            if (!vp) return;
+
+            vp.onwheel = function(e) {
+                e.preventDefault();
+                const factor = e.deltaY < 0 ? 1.15 : 0.87;
+                zoomRackImage(factor);
+            };
+
+            vp.onmousedown = function(e) {
+                if (e.button !== 0) return;
+                isRackImgPanning = true;
+                rackImgPanStart = { x: e.clientX - rackImgPan.x, y: e.clientY - rackImgPan.y };
+                vp.style.cursor = 'grabbing';
+            };
+
+            window.addEventListener('mousemove', function(e) {
+                if (!isRackImgPanning) return;
+                rackImgPan.x = e.clientX - rackImgPanStart.x;
+                rackImgPan.y = e.clientY - rackImgPanStart.y;
+                updateRackImgTransform();
+            });
+
+            window.addEventListener('mouseup', function() {
+                if (isRackImgPanning) {
+                    isRackImgPanning = false;
+                    const vp = document.getElementById('rack-modal-viewport');
+                    if (vp) vp.style.cursor = 'grab';
+                }
+            });
+
+            vp.ondblclick = function(e) {
+                resetRackImageZoom();
+            };
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeRackImageModal();
+            }
+        });
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        window.addEventListener('load', () => {
+            initRackModalEvents();
+            const promptEl = document.getElementById('file-prompt');
+            if (promptEl) {
+                promptEl.addEventListener('click', () => {
+                    const uploadInput = document.getElementById('json-upload');
+                    if (uploadInput) uploadInput.click();
+                });
+            }
+
+            try {
+                const saved = localStorage.getItem('plan_current_network_data') || localStorage.getItem('netmapp_current_network_data') || localStorage.getItem('netmap_current_network_data');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    parseAndLoadData(parsed, 'Loaded from cache');
+                }
+            } catch (e) {}
+        });
+    </script>
+</body>
+</html>
