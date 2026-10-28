@@ -11,7 +11,7 @@ The entire application is self-contained in a single HTML file and runs client-s
 1. **Open the application:** Double-click `index.html` in your browser (or host it on GitHub Pages).
 2. **Load a database:** Click the prompt or use the upload icon in the header to select a configuration file (e.g. `facility_a.json` or `facility_b.json`).
 3. **Navigate the map:**
-   * **Pan & Zoom:** Click and drag the map background to pan. Use the mouse wheel to zoom (clamped between 50% and 300%).
+   * **Pan & Zoom:** Click and drag the map background to pan. Use the mouse wheel to zoom
    * **Select a rack:** Click a rack marker on the map to inspect its installed devices in the right sidebar. Uplinks to other racks are highlighted with animated dashed lines.
    * **Move racks:** Click the pencil icon in the top-left corner of the map to enter edit mode, then drag racks to their physical locations. Click the `T` icon in the rack header to adjust label orientation.
 4. **Inspect & edit ports:**
