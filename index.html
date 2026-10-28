@@ -1341,6 +1341,8 @@
         };
 
         /* Pan & Zoom */
+        let panEventsInitialized = false;
+
         function setupPanAndZoom() {
             const svg = document.getElementById('network-map');
             const mapContainer = document.getElementById('map-container');
@@ -1370,27 +1372,30 @@
                 mapContainer.style.cursor = 'grabbing';
             };
 
-            window.addEventListener('mousemove', (e) => {
-                if (!isPanning) return;
-                const dx = e.clientX - panStart.x;
-                const dy = e.clientY - panStart.y;
-                panStart = { x: e.clientX, y: e.clientY };
+            if (!panEventsInitialized) {
+                panEventsInitialized = true;
+                window.addEventListener('mousemove', (e) => {
+                    if (!isPanning) return;
+                    const svgEl = document.getElementById('network-map');
+                    if (!svgEl) return;
+                    const ptCurrent = getSVGCoords(svgEl, e.clientX, e.clientY);
+                    const ptStart = getSVGCoords(svgEl, panStart.x, panStart.y);
+                    const dx = ptCurrent.x - ptStart.x;
+                    const dy = ptCurrent.y - ptStart.y;
+                    panStart = { x: e.clientX, y: e.clientY };
 
-                const rect = svg.getBoundingClientRect();
-                const scaleX = currentViewBox.width / rect.width;
-                const scaleY = currentViewBox.height / rect.height;
+                    currentViewBox.minX -= dx;
+                    currentViewBox.minY -= dy;
+                    applyViewBox();
+                });
 
-                currentViewBox.minX -= dx * scaleX;
-                currentViewBox.minY -= dy * scaleY;
-                applyViewBox();
-            });
-
-            window.addEventListener('mouseup', () => {
-                if (isPanning) {
-                    isPanning = false;
-                    mapContainer.style.cursor = 'default';
-                }
-            });
+                window.addEventListener('mouseup', () => {
+                    if (isPanning) {
+                        isPanning = false;
+                        mapContainer.style.cursor = 'default';
+                    }
+                });
+            }
         }
 
         window.zoomMap = function(factor) {
@@ -1403,9 +1408,8 @@
         function zoomMapAt(factor, clientX, clientY) {
             const svg = document.getElementById('network-map');
             if (!svg || !baseViewBox.width || !baseViewBox.height) return;
-            const rect = svg.getBoundingClientRect();
-            const relX = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-            const relY = Math.max(0, Math.min(1, (clientY - rect.top) / rect.height));
+
+            const pt = getSVGCoords(svg, clientX, clientY);
 
             // Zoom range constrained to 50% - 300%
             const minWidth = baseViewBox.width / 3.0; // 300% max zoom
@@ -1424,8 +1428,11 @@
 
             if (Math.abs(targetWidth - currentViewBox.width) < 0.01) return;
 
-            currentViewBox.minX += (currentViewBox.width - targetWidth) * relX;
-            currentViewBox.minY += (currentViewBox.height - targetHeight) * relY;
+            const ratioX = (pt.x - currentViewBox.minX) / currentViewBox.width;
+            const ratioY = (pt.y - currentViewBox.minY) / currentViewBox.height;
+
+            currentViewBox.minX = pt.x - targetWidth * ratioX;
+            currentViewBox.minY = pt.y - targetHeight * ratioY;
             currentViewBox.width = targetWidth;
             currentViewBox.height = targetHeight;
             applyViewBox();
