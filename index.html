@@ -1092,8 +1092,14 @@
 
             try {
                 const parser = new DOMParser();
-                const doc = parser.parseFromString(currentSvgMarkup, 'image/svg+xml');
-                const importedSvg = doc.querySelector('svg');
+                let doc = parser.parseFromString(currentSvgMarkup, 'image/svg+xml');
+                let importedSvg = doc.querySelector('svg');
+                
+                // Fallback to HTML parser if XML parser failed (e.g. unescaped & in labels)
+                if (!importedSvg || doc.querySelector('parsererror')) {
+                    doc = parser.parseFromString(currentSvgMarkup, 'text/html');
+                    importedSvg = doc.querySelector('svg');
+                }
 
                 if (importedSvg) {
                     let vb = importedSvg.getAttribute('viewBox');
@@ -1113,10 +1119,22 @@
                     });
                     bgLayer.innerHTML = innerMarkup || importedSvg.innerHTML;
                 } else {
-                    bgLayer.innerHTML = currentSvgMarkup;
+                    const vbMatch = currentSvgMarkup.match(/viewBox=["']([^"']+)["']/i);
+                    if (vbMatch) {
+                        currentSvg.setAttribute('viewBox', vbMatch[1]);
+                    }
+                    const stripped = currentSvgMarkup
+                        .replace(/^[\s\S]*?<svg[^>]*>/i, '')
+                        .replace(/<\/svg>[\s\S]*$/i, '');
+                    bgLayer.innerHTML = stripped;
                 }
             } catch(e) {
-                bgLayer.innerHTML = currentSvgMarkup;
+                const vbMatch = currentSvgMarkup.match(/viewBox=["']([^"']+)["']/i);
+                if (vbMatch) currentSvg.setAttribute('viewBox', vbMatch[1]);
+                const stripped = currentSvgMarkup
+                    .replace(/^[\s\S]*?<svg[^>]*>/i, '')
+                    .replace(/<\/svg>[\s\S]*$/i, '');
+                bgLayer.innerHTML = stripped;
             }
 
             setupPanAndZoom();
