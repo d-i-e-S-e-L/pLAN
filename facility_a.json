@@ -6,14 +6,14 @@
         "server_room": {
             "x": 130,
             "y": 115,
-            "label_side": "bottom",
+            "label_side": "top",
             "label_align": "center",
             "comment": "rack door lock sticks"
         },
         "office": {
-            "x": 130,
-            "y": 420,
-            "label_side": "top",
+            "x": 192,
+            "y": 377,
+            "label_side": "left",
             "label_align": "center"
         },
         "high_bay_warehouse": {
@@ -29,9 +29,9 @@
             "label_align": "center"
         },
         "loading_dock": {
-            "x": 920,
-            "y": 325,
-            "label_side": "top",
+            "x": 841,
+            "y": 331,
+            "label_side": "right",
             "label_align": "center"
         }
     },
